@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class extends the WPILib TimedRobot class to provide several features, such
@@ -48,7 +49,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
  * overridden.
  */
 public class BorgRobot extends TimedRobot implements StateLoggable, MessageLoggable {
-	private HashMap<String, BorgSubsystem> subsystems;
+	private Map<String, BorgSubsystem> subsystems = new HashMap<>();
 	
 	private PowerDistributionPanel powerDistributionPanel;
 	
@@ -59,8 +60,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	private Map<String, Object> stateBuffer = new HashMap<>();
 	
 	protected PublicKey publicKey;
-	protected Map<String, Invocable> autoModes;
-	protected SendableChooser<Invocable> autoModeChooser;
+	protected SendableChooser<Invocable> autoModes = new SendableChooser<>();
 	
 	/**
 	 * Log an init message.  You *must* call initAutoScripts() yourself with the correct
@@ -78,9 +78,11 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void autonomousInit() {
 		messageBuffer.add(new Message("Autonomous initalizing.", Type.INFO));
 		
-		Invocable i = autoModeChooser.getSelected();
+		Invocable i = autoModes.getSelected();
 		try {
 			i.invokeFunction("init");
+		} catch (NullPointerException e) {
+			messageBuffer.add(new Message("No auto script selected!", Type.SEVERE));
 		} catch (NoSuchMethodException e) {
 			messageBuffer.add(new Message("This auto script must have an init() function!", Type.SEVERE));
 		} catch (ScriptException e) {
@@ -95,9 +97,11 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void autonomousPeriodic() {
 		periodic();
 		
-		Invocable i = autoModeChooser.getSelected();
+		Invocable i = autoModes.getSelected();
 		try {
 			i.invokeFunction("periodic");
+		} catch (NullPointerException e) {
+			messageBuffer.add(new Message("No auto script selected!", Type.SEVERE));
 		} catch (NoSuchMethodException e) {
 			messageBuffer.add(new Message("This auto script must have a periodic() function!", Type.SEVERE));
 		} catch (ScriptException e) {
@@ -255,6 +259,19 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	}
 	
 	/**
+	 * Initialize the public key for autonomous scripts and load them for use via the SmartDashboard.
+	 * @throws IOException 
+	 * @throws InvalidKeySpecException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws SignatureException 
+	 * @throws InvalidKeyException 
+	 */
+	protected void initAutoScripts(File publicKey, File scriptDirectory) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
+		initPublicKey(publicKey);
+		initAutoScripts(scriptDirectory);
+	}
+	
+	/**
 	 * Initialize the public key for autonomous script signature verification.
 	 */
 	protected void initPublicKey(File publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
@@ -282,6 +299,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 			return false;
 		})));
 		
+		messageBuffer.add(new Message("Found the following signatures: " + signatures, Type.DEBUG));
 		
 		//Verify scripts
 		Signature publicSignature = Signature.getInstance("SHA256withRSA");
@@ -300,6 +318,8 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 				return false;
 			});
 			
+			messageBuffer.add(new Message("While looking at signature " + sig + ", found the following scripts: " + scriptMatches, Type.DEBUG));
+			
 			if (scriptMatches.length < 1) {
 				messageBuffer.add(new Message("Couldn't find auto script " + scriptName + ".", Type.WARNING));
 			} else if (scriptMatches.length > 1) {
@@ -312,13 +332,19 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 					try {
 						setUpScriptContext(engine);
 						engine.eval(new FileReader(scriptMatches[0]));
-						autoModes.put(scriptName, (Invocable) engine);
+						autoModes.addDefault(scriptName, (Invocable) engine);
+						messageBuffer.add(new Message("Added " + scriptName + " to the SendableChooser.", Type.DEBUG));
 					} catch (ScriptException s) {
 						messageBuffer.add(new Message(scriptName + " doesn't parse!", Type.SEVERE));
 					}
+				} else {
+					messageBuffer.add(new Message(scriptName + " failed signature verification.", Type.WARNING));
 				}
 			}
 		}
+		
+		SmartDashboard.putData("Autonomous modes", autoModes);
+		messageBuffer.add(new Message("Added the auto modes chooser, " + autoModes + " to the SmartDashboard.", Type.DEBUG));
 	}
 	
 	/**

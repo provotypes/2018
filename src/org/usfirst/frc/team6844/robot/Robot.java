@@ -31,13 +31,15 @@ public class Robot extends BorgRobot {
 		//setPowerDistributionPanel(new PowerDistributionPanel(0));
 		
 		try {
-			//setStateLogger(new CSVStateLogger(new File("/home/lvuser/log.csv")));
-			//setMessageLogger(new TextFileMessageLogger(new File("/home/lvuser/log.txt")));
+			setStateLogger(new CSVStateLogger(new File("/home/lvuser/log.csv")));
+			setMessageLogger(new TextFileMessageLogger(new File("/home/lvuser/log.txt")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		drivetrain = new Drivetrain();
+		registerSubsystem("drivetrain", drivetrain);
+		
 		gamepad = new LogitechGamepadController(1);
 		
 		try {
@@ -71,7 +73,14 @@ public class Robot extends BorgRobot {
 
 	@Override
 	public void testInit() {
+		super.testInit();
 		
+		try {
+			initPublicKey(new File("/home/lvuser/key.pub"));
+			initAutoScripts(new File("/home/lvuser/auto"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

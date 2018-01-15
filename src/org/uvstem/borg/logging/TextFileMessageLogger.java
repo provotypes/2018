@@ -32,5 +32,4 @@ public class TextFileMessageLogger extends MessageLogger {
 			}
 		}
 	}
-
 }
