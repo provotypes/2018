@@ -14,23 +14,26 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Drivetrain extends BorgSubsystem {
 	
-	Victor victor_right, victor_left;
-	TalonSRX ct_right, ct_left;
+	Victor victor_right1, victor_right2;
+	TalonSRX ct_left1, ct_left2;
 	
 	public Drivetrain() {
-		victor_right = new Victor(0);
-		victor_left = new Victor(1);
+		victor_right1 = new Victor(0);
+		victor_right2 = new Victor(1);
 		
-		ct_right = new TalonSRX(1);
-		ct_left = new TalonSRX(2);
+		ct_left1 = new TalonSRX(1);
+		ct_left2 = new TalonSRX(2);
+		
+		ct_left1.setInverted(true);
+		ct_left2.setInverted(true);
 	}
 	
 	public void tankDrive(double left, double right) {
-		victor_right.set(right);
-		ct_right.set(ControlMode.PercentOutput, right);
+		ct_left1.set(ControlMode.PercentOutput, left);
+		ct_left2.set(ControlMode.PercentOutput, left);
 		
-		victor_left.set(left);
-		ct_left.set(ControlMode.PercentOutput, left);
+		victor_right1.set(right);
+		victor_right2.set(right);
 	}
 
 	@Override
