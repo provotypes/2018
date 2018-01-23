@@ -26,9 +26,10 @@ public class CSVStateLogger extends StateLogger {
 	@Override
 	public void log() {
 		if (!printedHeader) {
+			out.print("System/time");
 			for (String l : registeredLoggables.keySet()) {
 				for (String s : registeredLoggables.get(l).getStateLogFields()) {
-					out.print(l + "/" + s + ",");
+					out.print("," + l + "/" + s);
 				}
 			}
 			
@@ -39,8 +40,9 @@ public class CSVStateLogger extends StateLogger {
 		}
 		
 		for (String l : registeredLoggables.keySet()) {
+			out.print(System.currentTimeMillis());
 			for (String f : registeredLoggables.get(l).logState().keySet()) {
-				out.print(registeredLoggables.get(l).logState().get(f) + ",");
+				out.print("," + registeredLoggables.get(l).logState().get(f));
 			}
 		}
 		
