@@ -8,16 +8,14 @@
 package org.usfirst.frc.team6844.robot;
 
 import java.io.File;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 
 import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
+import edu.wpi.cscore.CameraServerJNI;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends BorgRobot {
@@ -31,11 +29,13 @@ public class Robot extends BorgRobot {
 		//setPowerDistributionPanel(new PowerDistributionPanel(0));
 		
 		try {
-			setStateLogger(new CSVStateLogger(new File("/home/lvuser/log.csv")));
-			setMessageLogger(new TextFileMessageLogger(new File("/home/lvuser/log.txt")));
+			setStateLogger(new CSVStateLogger(new File("/logs/log.csv")));
+			setMessageLogger(new TextFileMessageLogger(new File("/logs/log.txt")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		CameraServer.getInstance().startAutomaticCapture();
 		
 		drivetrain = new Drivetrain();
 		registerSubsystem("drivetrain", drivetrain);
@@ -43,7 +43,7 @@ public class Robot extends BorgRobot {
 		gamepad = new LogitechGamepadController(1);
 		
 		try {
-			initPublicKey(new File("/home/lvuser/key.pub"));
+			initPublicKey(new File("/key/key.pub"));
 			initAutoScripts(new File("/home/lvuser/auto"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +68,7 @@ public class Robot extends BorgRobot {
 	@Override
 	public void teleopPeriodic() {
 		super.teleopPeriodic();
-		drivetrain.tankDrive(gamepad.getLeftY(), gamepad.getRightY());
+		drivetrain.arcadeDrive(gamepad.getRightY(), gamepad.getLeftX(), true);
 	}
 
 	@Override
