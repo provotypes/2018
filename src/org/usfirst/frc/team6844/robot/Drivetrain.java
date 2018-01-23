@@ -24,8 +24,8 @@ public class Drivetrain extends BorgSubsystem {
 		ct_left1 = new TalonSRX(1);
 		ct_left2 = new TalonSRX(2);
 		
-		ct_left1.setInverted(true);
-		ct_left2.setInverted(true);
+		victor_right1.setInverted(true);
+		victor_right2.setInverted(true);
 	}
 	
 	public void tankDrive(double left, double right) {
@@ -34,6 +34,14 @@ public class Drivetrain extends BorgSubsystem {
 		
 		victor_right1.set(right);
 		victor_right2.set(right);
+	}
+	
+	public void arcadeDrive(double speed, double turn) {
+		tankDrive(speed + turn, speed - turn);
+	}
+	
+	public void arcadeDrive(double speed, double turn, boolean squareInputs) {
+		arcadeDrive(sign(speed) * Math.pow(speed, 2), sign(turn) * Math.pow(turn, 2));
 	}
 
 	@Override
@@ -52,6 +60,16 @@ public class Drivetrain extends BorgSubsystem {
 	public Map<String, Object> logState() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private double sign(double magnitude) {
+		if (magnitude > 0) {
+			return 1;
+		} else if (magnitude < 0) {
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 
 }
