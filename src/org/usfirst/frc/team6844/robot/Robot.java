@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends BorgRobot {
 	
+	public static double AUTO_SPEED = 0.5;
+	public static double DISTANCE_TO_AUTOLINE = 10;
+	
 	Drivetrain drivetrain;
 	LogitechGamepadController gamepad;
 
@@ -86,5 +89,14 @@ public class Robot extends BorgRobot {
 	@Override
 	public void testPeriodic() {
 		super.testPeriodic();
+	}
+	
+	public void driveIfNotOverLine() {
+		//get info from sensor, not drivetrain
+		if (drivetrain.getDistance() < DISTANCE_TO_AUTOLINE){
+			drivetrain.tankDrive(AUTO_SPEED, AUTO_SPEED);
+		} else {
+			drivetrain.tankDrive(0, 0);
+		}
 	}
 }
