@@ -11,34 +11,35 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Drivetrain extends BorgSubsystem {
 	
 	Victor victor_right1, victor_right2;
 	TalonSRX ct_left1, ct_left2;
+	Spark spark_left1, spark_left2, spark_right1, spark_right2;
 	AnalogGyro gyro;
 	
 	public Drivetrain() {
-		victor_right1 = new Victor(0);
-		victor_right2 = new Victor(1);
+		spark_left1 = new Spark(0);
+		spark_left2 = new Spark(1);
+		spark_right1 = new Spark(2);
+		spark_right2 = new Spark(3);
 		
-		ct_left1 = new TalonSRX(1);
-		ct_left2 = new TalonSRX(2);
-		
-		victor_right1.setInverted(true);
-		victor_right2.setInverted(true);
+		spark_right1.setInverted(true);
+		spark_right2.setInverted(true);
 		
 		gyro = new AnalogGyro(0);
 		
 	}
 	
 	public void tankDrive(double left, double right) {
-		ct_left1.set(ControlMode.PercentOutput, left);
-		ct_left2.set(ControlMode.PercentOutput, left);
+		spark_left1.set(left);
+		spark_left2.set(left);
 		
-		victor_right1.set(right);
-		victor_right2.set(right);
+		spark_right1.set(right);
+		spark_right2.set(right);
 		
 	}
 	
