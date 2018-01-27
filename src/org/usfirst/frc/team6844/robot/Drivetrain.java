@@ -7,17 +7,11 @@ import java.util.Set;
 import org.uvstem.borg.BorgSubsystem;
 import org.uvstem.borg.logging.Message;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Victor;
 
 public class Drivetrain extends BorgSubsystem {
 	
-	Victor victor_right1, victor_right2;
-	TalonSRX ct_left1, ct_left2;
 	Spark spark_left1, spark_left2, spark_right1, spark_right2;
 	AnalogGyro gyro;
 	
