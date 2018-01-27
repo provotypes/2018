@@ -15,6 +15,7 @@ import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
 import edu.wpi.cscore.CameraServerJNI;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
@@ -22,6 +23,7 @@ public class Robot extends BorgRobot {
 	
 	Drivetrain drivetrain;
 	LogitechGamepadController gamepad;
+	AnalogGyro gyro;
 
 	@Override
 	public void robotInit() {
@@ -41,6 +43,7 @@ public class Robot extends BorgRobot {
 		registerSubsystem("drivetrain", drivetrain);
 		
 		gamepad = new LogitechGamepadController(1);
+		gyro = new AnalogGyro(0);
 		
 		try {
 			initPublicKey(new File("/key/key.pub"));
@@ -53,6 +56,8 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
+		
+		gyro.reset();
 	}
 
 	@Override
