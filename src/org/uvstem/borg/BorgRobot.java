@@ -407,6 +407,8 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 * @param engine
 	 */
 	private void setUpScriptContext(ScriptEngine engine) {
+		engine.put("gameData", DriverStation.getInstance().getGameSpecificMessage());
+		
 		for (String subsystem : subsystems.keySet()) {
 			engine.put(subsystem, subsystems.get(subsystem));
 		}
