@@ -30,8 +30,6 @@ public class Drivetrain extends BorgSubsystem {
 		victor_right2.setInverted(true);
 		
 		gyro = new AnalogGyro(0);
-		gyro.initGyro();
-		gyro.calibrate();
 		
 	}
 	
@@ -78,6 +76,14 @@ public class Drivetrain extends BorgSubsystem {
 		} else {
 			return 0;
 		}
+	}
+	
+	public void resetGyro() {
+		gyro.reset();
+	}
+	
+	public void calibrateGyro() {
+		gyro.calibrate();
 	}
 
 }

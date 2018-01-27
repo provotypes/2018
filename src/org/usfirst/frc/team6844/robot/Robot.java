@@ -53,6 +53,8 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
+		
+		drivetrain.resetGyro();
 	}
 
 	@Override
