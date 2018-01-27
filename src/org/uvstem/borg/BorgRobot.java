@@ -32,6 +32,7 @@ import org.uvstem.borg.logging.MessageLogger;
 import org.uvstem.borg.logging.StateLoggable;
 import org.uvstem.borg.logging.StateLogger;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotController;
@@ -53,6 +54,16 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	
 	private PowerDistributionPanel powerDistributionPanel;
 	
+	private BuiltInAccelerometer accelerometer;
+
+	//Set to ridiculously high values as defaults; won't record collisions.
+	private double collisionAccelThreshold = 100;
+	private double collisionJerkThreshold = 100;
+	
+	private double lastX;
+	private double lastY;
+	private double lastZ;
+
 	protected MessageLogger messageLogger;
 	protected StateLogger stateLogger;
 	
@@ -156,6 +167,31 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 * testPeriodic() is called.
 	 */
 	protected void periodic() {
+		if (accelerometer != null) {
+			double accel = Math.sqrt(
+					Math.pow(accelerometer.getX(), 2) +
+					Math.pow(accelerometer.getY(), 2) +
+					Math.pow(accelerometer.getZ(), 2));
+			
+			double jerk = Math.sqrt(
+					Math.pow(accelerometer.getX() - lastX, 2) +
+					Math.pow(accelerometer.getY() - lastY, 2) +
+					Math.pow(accelerometer.getZ() - lastZ, 2));
+			
+
+			if (accel > collisionAccelThreshold) {
+				messageBuffer.add(new Message("Collision: acceleration exceeds threshold!", Type.SEVERE));
+			}
+
+			if (jerk > collisionJerkThreshold) {
+				messageBuffer.add(new Message("Collision: jerk exceeds threshold!", Type.SEVERE));
+			}	
+
+			lastX = accelerometer.getX();
+			lastY = accelerometer.getY();
+			lastZ = accelerometer.getZ();
+		}
+
 		log();
 	}
 	
@@ -256,7 +292,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 */
 	protected final void setPowerDistributionPanel(PowerDistributionPanel powerDistributionPanel) {
 		this.powerDistributionPanel = powerDistributionPanel;
-	}
+	}	
 	
 	/**
 	 * Initialize the public key for autonomous scripts and load them for use via the SmartDashboard.
@@ -345,6 +381,25 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		
 		SmartDashboard.putData("Autonomous modes", autoModes);
 		messageBuffer.add(new Message("Added the auto modes chooser, " + autoModes + " to the SmartDashboard.", Type.DEBUG));
+	}
+	
+	/**
+	 * Set the acceleration threshold to use for logging purposes.  Should be called as part
+	 * as part of robotInit().
+	 * @param value the threshold in G's to use for logging collisions.
+	 */
+	public void setCollisionAccelThreshold(double value) {
+		collisionAccelThreshold = value;
+	}
+	
+	/**
+	 * Set the jerk threshold to use for logging purposes.  Should be called as part
+	 * of robotInit().
+	 * @param value the threshold in G's/period to use for logging
+	 * collisisons.
+	 */
+	public void setCollisionJerkThreshold(double value) {
+		collisionJerkThreshold = value;
 	}
 	
 	/**
