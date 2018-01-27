@@ -169,14 +169,14 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	protected void periodic() {
 		if (accelerometer != null) {
 			double accel = Math.sqrt(
-					Math.pow(accelerometer.getX(), 2) +
-					Math.pow(accelerometer.getY(), 2) +
-					Math.pow(accelerometer.getZ(), 2));
+				Math.pow(accelerometer.getX(), 2) +
+				Math.pow(accelerometer.getY(), 2) +
+				Math.pow(accelerometer.getZ(), 2));
 			
 			double jerk = Math.sqrt(
-					Math.pow(accelerometer.getX() - lastX, 2) +
-					Math.pow(accelerometer.getY() - lastY, 2) +
-					Math.pow(accelerometer.getZ() - lastZ, 2));
+				Math.pow(accelerometer.getX() - lastX, 2) +
+				Math.pow(accelerometer.getY() - lastY, 2) +
+				Math.pow(accelerometer.getZ() - lastZ, 2));
 			
 
 			if (accel > collisionAccelThreshold) {
@@ -292,7 +292,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 */
 	protected final void setPowerDistributionPanel(PowerDistributionPanel powerDistributionPanel) {
 		this.powerDistributionPanel = powerDistributionPanel;
-	}	
+	}
 	
 	/**
 	 * Initialize the public key for autonomous scripts and load them for use via the SmartDashboard.
@@ -382,7 +382,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		SmartDashboard.putData("Autonomous modes", autoModes);
 		messageBuffer.add(new Message("Added the auto modes chooser, " + autoModes + " to the SmartDashboard.", Type.DEBUG));
 	}
-	
+
 	/**
 	 * Set the acceleration threshold to use for logging purposes.  Should be called as part
 	 * as part of robotInit().
@@ -391,7 +391,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void setCollisionAccelThreshold(double value) {
 		collisionAccelThreshold = value;
 	}
-	
+
 	/**
 	 * Set the jerk threshold to use for logging purposes.  Should be called as part
 	 * of robotInit().
@@ -401,7 +401,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void setCollisionJerkThreshold(double value) {
 		collisionJerkThreshold = value;
 	}
-	
+
 	/**
 	 * Expose each registered subsystem to the autonomous script engine.
 	 * @param engine
