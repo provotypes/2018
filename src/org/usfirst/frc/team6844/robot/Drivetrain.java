@@ -10,12 +10,14 @@ import org.uvstem.borg.logging.Message;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Drivetrain extends BorgSubsystem {
 	
 	Victor victor_right1, victor_right2;
 	TalonSRX ct_left1, ct_left2;
+	AnalogGyro gyro;
 	
 	public Drivetrain() {
 		victor_right1 = new Victor(0);
@@ -26,6 +28,10 @@ public class Drivetrain extends BorgSubsystem {
 		
 		victor_right1.setInverted(true);
 		victor_right2.setInverted(true);
+		
+		gyro = new AnalogGyro(0);
+		gyro.initGyro();
+		gyro.calibrate();
 		
 	}
 	
