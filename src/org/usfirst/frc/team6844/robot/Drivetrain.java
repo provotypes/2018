@@ -7,13 +7,20 @@ import java.util.Set;
 import org.uvstem.borg.BorgSubsystem;
 import org.uvstem.borg.logging.Message;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Drivetrain extends BorgSubsystem {
 	
 	Spark spark_left1, spark_left2, spark_right1, spark_right2;
-	AnalogGyro gyro;
+	TalonSRX talon_arm, talon_intake_left, talon_intake_right;
+	ADXRS450_Gyro gyro;
+	Encoder encoder;
 	
 	public Drivetrain() {
 		spark_left1 = new Spark(0);
@@ -24,8 +31,8 @@ public class Drivetrain extends BorgSubsystem {
 		spark_right1.setInverted(true);
 		spark_right2.setInverted(true);
 		
-		gyro = new AnalogGyro(0);
-		
+		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);	
+		encoder = new Encoder(0, 1);
 	}
 	
 	public void tankDrive(double left, double right) {
@@ -34,7 +41,6 @@ public class Drivetrain extends BorgSubsystem {
 		
 		spark_right1.set(right);
 		spark_right2.set(right);
-		
 	}
 	
 	public void arcadeDrive(double speed, double turn) {

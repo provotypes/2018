@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends BorgRobot {
 	
+	final double DISTANCE_PER_PULSE = (6 * Math.PI)/360; //in inches
+	
 	Drivetrain drivetrain;
 	LogitechGamepadController gamepad;
 
@@ -55,6 +57,7 @@ public class Robot extends BorgRobot {
 		super.autonomousInit();
 		
 		drivetrain.resetGyro();
+		drivetrain.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
 	}
 
 	@Override
@@ -71,6 +74,8 @@ public class Robot extends BorgRobot {
 	public void teleopPeriodic() {
 		super.teleopPeriodic();
 		drivetrain.arcadeDrive(gamepad.getRightY(), gamepad.getLeftX(), true);
+		
+		System.out.println(drivetrain.gyro.getAngle());
 	}
 
 	@Override
