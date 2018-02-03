@@ -23,6 +23,7 @@ public class Robot extends BorgRobot {
 	final double DISTANCE_PER_PULSE = (6 * Math.PI)/360; //in inches
 	
 	Drivetrain drivetrain;
+	Intake intake;
 	LogitechGamepadController gamepad;
 
 	@Override
@@ -41,6 +42,9 @@ public class Robot extends BorgRobot {
 		
 		drivetrain = new Drivetrain();
 		registerSubsystem("drivetrain", drivetrain);
+		
+		intake = new Intake();
+		registerSubsystem("intake", intake);
 		
 		gamepad = new LogitechGamepadController(1);
 		
@@ -76,6 +80,30 @@ public class Robot extends BorgRobot {
 		drivetrain.arcadeDrive(gamepad.getRightY(), gamepad.getLeftX(), true);
 		
 		System.out.println(drivetrain.gyro.getAngle());
+		
+		//Start button, nerfs the speed
+		if (gamepad.getRawButtonPressed(8)) { 
+			drivetrain.nerfSpeed();
+		}
+		
+		//A button, switches forwards and backwards
+		if (gamepad.getRawButtonPressed(1)) {
+			drivetrain.reverseDriveDirection();
+		}
+		
+		//Right bumper, intake in
+		if (gamepad.getRightBumper()) {
+			intake.intakeIn();
+		} else {
+			intake.stopIntake();
+		}
+		
+		//Left bumper, intake out
+		if (gamepad.getLeftBumper()) {
+			intake.intakeOut();
+		} else {
+			intake.stopIntake();
+		}
 	}
 
 	@Override
