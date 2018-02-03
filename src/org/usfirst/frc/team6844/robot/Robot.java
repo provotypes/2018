@@ -82,12 +82,12 @@ public class Robot extends BorgRobot {
 		System.out.println(drivetrain.gyro.getAngle());
 		
 		//Start button, nerfs the speed
-		if (gamepad.getRawButtonPressed(8)) { 
+		if (gamepad.getRawButtonPressed(gamepad.START_BUTTON)) { 
 			drivetrain.nerfSpeed();
 		}
 		
 		//A button, switches forwards and backwards
-		if (gamepad.getRawButtonPressed(1)) {
+		if (gamepad.getRawButtonPressed(gamepad.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
 		
