@@ -15,8 +15,9 @@ public class Intake extends BorgSubsystem{
 	TalonSRX talon_intake_left, talon_intake_right;
 	
 	public Intake() {
-		talon_intake_left = new TalonSRX(-1); //port unknown
-		talon_intake_right = new TalonSRX(-1); //port unknown
+		talon_intake_left = new TalonSRX(4);
+		talon_intake_right = new TalonSRX(6);
+		talon_intake_right.setInverted(true);
 	}
 	
 	public void intakeIn() {

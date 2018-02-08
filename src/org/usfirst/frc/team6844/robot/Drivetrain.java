@@ -34,7 +34,7 @@ public class Drivetrain extends BorgSubsystem {
 		spark_right1.setInverted(true);
 		spark_right2.setInverted(true);
 		
-		talon_arm = new TalonSRX(-1); //port unknown
+		talon_arm = new TalonSRX(5);
 		
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);	
 		encoder = new Encoder(0, 1);
@@ -117,5 +117,9 @@ public class Drivetrain extends BorgSubsystem {
 		} else if (driveScalingFactor == .5){
 			driveScalingFactor = 1;
 		}
+	}
+	
+	public void operateArm(double val) {
+	    talon_arm.set(ControlMode.PercentOutput, val + .104878);
 	}
 }

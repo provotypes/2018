@@ -24,7 +24,8 @@ public class Robot extends BorgRobot {
 	
 	Drivetrain drivetrain;
 	Intake intake;
-	LogitechGamepadController gamepad;
+	LogitechGamepadController gamepad_driver;
+	LogitechGamepadController gamepad_operator;
 
 	@Override
 	public void robotInit() {
@@ -46,7 +47,8 @@ public class Robot extends BorgRobot {
 		intake = new Intake();
 		registerSubsystem("intake", intake);
 		
-		gamepad = new LogitechGamepadController(1);
+		gamepad_driver = new LogitechGamepadController(1);
+		gamepad_operator = new LogitechGamepadController(2);
 		
 		try {
 			initPublicKey(new File("/key/key.pub"));
@@ -77,32 +79,31 @@ public class Robot extends BorgRobot {
 	@Override
 	public void teleopPeriodic() {
 		super.teleopPeriodic();
-		drivetrain.arcadeDrive(gamepad.getRightY(), gamepad.getLeftX(), true);
+		drivetrain.arcadeDrive(gamepad_driver.getRightY(), gamepad_driver.getLeftX(), true);
 		
 		System.out.println(drivetrain.gyro.getAngle());
 		
+		//Operator right stick, controls arm
+        drivetrain.operateArm(gamepad_operator.getRightY());
+		
 		//Start button, nerfs the speed
-		if (gamepad.getRawButtonPressed(gamepad.START_BUTTON)) { 
+		if (gamepad_driver.getRawButtonPressed(gamepad_driver.START_BUTTON)) { 
 			drivetrain.nerfSpeed();
 		}
 		
 		//A button, switches forwards and backwards
-		if (gamepad.getRawButtonPressed(gamepad.A_BUTTON)) {
+		if (gamepad_driver.getRawButtonPressed(gamepad_driver.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
 		
-		//Right bumper, intake in
-		if (gamepad.getRightBumper()) {
-			intake.intakeIn();
-		} else {
-			intake.stopIntake();
-		}
-		
 		//Left bumper, intake out
-		if (gamepad.getLeftBumper()) {
-			intake.intakeOut();
+		//Right bumper, intake in
+		if (gamepad_operator.getRightBumper()) {
+			intake.intakeIn();
+		} else if (gamepad_operator.getLeftBumper()){
+		    intake.intakeOut();
 		} else {
-			intake.stopIntake();
+		    intake.stopIntake();
 		}
 	}
 
