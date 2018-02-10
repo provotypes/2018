@@ -10,29 +10,49 @@ import org.uvstem.borg.logging.Message;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class Intake extends BorgSubsystem{
+public class Intake extends BorgSubsystem {
 
-	TalonSRX talon_intake_left, talon_intake_right;
+	private TalonSRX motorLeft = new TalonSRX(4);
+	private TalonSRX motorRight = new TalonSRX(6);
+	
+	private State state = State.STOP;
+	
+	public enum State {
+		INTAKE,
+		SHOOT,
+		STOP
+	}
 
 	public Intake() {
-		talon_intake_left = new TalonSRX(4);
-		talon_intake_right = new TalonSRX(6);
-		talon_intake_right.setInverted(true);
+		motorRight.setInverted(true);
+	}
+	
+	public void update() {
+		switch(state) {
+		case INTAKE:
+			motorLeft.set(ControlMode.PercentOutput, .8);
+			motorRight.set(ControlMode.PercentOutput, 1);
+			break;
+		case SHOOT:
+			motorLeft.set(ControlMode.PercentOutput, -1);
+			motorRight.set(ControlMode.PercentOutput, -1);
+			break;
+		case STOP:
+			motorLeft.set(ControlMode.PercentOutput, 0);
+			motorRight.set(ControlMode.PercentOutput, 0);
+		}
 	}
 
 	public void intakeIn() {
-		talon_intake_left.set(ControlMode.PercentOutput, 1);
-		talon_intake_right.set(ControlMode.PercentOutput, 1);
+		this.state = State.INTAKE;
 	}
 
 	public void intakeOut() {
-		talon_intake_left.set(ControlMode.PercentOutput, -1);
-		talon_intake_right.set(ControlMode.PercentOutput, -1);
+		this.state = State.SHOOT;
 	}
 
 	public void stopIntake() {
-		talon_intake_left.set(ControlMode.PercentOutput, 0);
-		talon_intake_right.set(ControlMode.PercentOutput, 0);
+		this.state = State.STOP;
 	}
 
 	@Override
