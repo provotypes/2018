@@ -24,6 +24,7 @@ public class Robot extends BorgRobot {
 	
 	Drivetrain drivetrain;
 	Intake intake;
+	Arm arm;
 	LogitechGamepadController gamepad_driver;
 	LogitechGamepadController gamepad_operator;
 
@@ -46,6 +47,8 @@ public class Robot extends BorgRobot {
 		
 		intake = new Intake();
 		registerSubsystem("intake", intake);
+		
+		arm = new Arm();
 		
 		gamepad_driver = new LogitechGamepadController(1);
 		gamepad_operator = new LogitechGamepadController(2);
@@ -81,23 +84,34 @@ public class Robot extends BorgRobot {
 		super.teleopPeriodic();
 		drivetrain.arcadeDrive(gamepad_driver.getRightY(), gamepad_driver.getLeftX(), true);
 		
-		System.out.println(drivetrain.gyro.getAngle());
+		//System.out.println(drivetrain.gyro.getAngle());
 		
 		//Operator right stick, controls arm
-        drivetrain.operateArm(gamepad_operator.getRightY());
+		//if bottom limit switch is pressed and arm is going down, stop arm
+		if (arm.bottom_limitswitch_pressed() && (gamepad_operator.getRightY() * -1) < 0) {
+		    arm.operateArm(0);
+		    
+		//if bottom limit switch is pressed and arm is going down, stop arm
+		} else if (arm.top_limitswitch_pressed() && (gamepad_operator.getRightY() * -1) > 0){
+		    arm.operateArm(0);
+		    
+		//if bottom limit switch is not pressed, or arm is going up, allow the input
+		} else {
+		    arm.operateArm(-1 * gamepad_operator.getRightY());
+		}
 		
-		//Start button, nerfs the speed
+		//Driver start button, nerfs the speed
 		if (gamepad_driver.getRawButtonPressed(gamepad_driver.START_BUTTON)) { 
 			drivetrain.nerfSpeed();
 		}
 		
-		//A button, switches forwards and backwards
+		//Driver A button, switches forwards and backwards
 		if (gamepad_driver.getRawButtonPressed(gamepad_driver.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
 		
-		//Left bumper, intake out
-		//Right bumper, intake in
+		//Operator left bumper, intake out
+		//Operator right bumper, intake in
 		if (gamepad_operator.getRightBumper()) {
 			intake.intakeIn();
 		} else if (gamepad_operator.getLeftBumper()){
