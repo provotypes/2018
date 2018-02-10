@@ -11,12 +11,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Drivetrain extends BorgSubsystem {
+	
+	private final double INCHES_PER_PULSE = (6 * Math.PI) / 360; //in inches
 	
 	Spark spark_left1, spark_left2, spark_right1, spark_right2;
 	ADXRS450_Gyro gyro;
@@ -35,6 +36,8 @@ public class Drivetrain extends BorgSubsystem {
 		
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);	
 		encoder = new Encoder(0, 1);
+		
+		encoder.setDistancePerPulse(INCHES_PER_PULSE);
 	}
 	
 	public void tankDrive(double left, double right) {
