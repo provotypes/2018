@@ -24,6 +24,7 @@ public class Robot extends BorgRobot {
 	Drivetrain drivetrain;
 	Intake intake;
 	Arm arm;
+	
 	LogitechGamepadController gamepadDriver;
 	LogitechGamepadController gamepadOperator;
 
@@ -48,6 +49,7 @@ public class Robot extends BorgRobot {
 		registerSubsystem("intake", intake);
 
 		arm = new Arm();
+		registerSubsystem("arm", arm);
 
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
@@ -63,7 +65,6 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
-
 		drivetrain.resetGyro();
 	}
 
@@ -81,8 +82,6 @@ public class Robot extends BorgRobot {
 	public void teleopPeriodic() {
 		super.teleopPeriodic();
 		drivetrain.arcadeDrive(gamepadDriver.getRightY(), gamepadDriver.getLeftX(), true);
-
-		//System.out.println(drivetrain.gyro.getAngle());
 		
 		// Operator Y button, sets position of switch to top
 		if (gamepadOperator.getRawButtonPressed(gamepadOperator.Y_BUTTON)) {
@@ -90,7 +89,8 @@ public class Robot extends BorgRobot {
 		}
 		
 		// Operator X/B button, sets position of switch to middle
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || 
+				gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
 			arm.setPosition(Position.MIDDLE);
 		}
 		
@@ -120,6 +120,7 @@ public class Robot extends BorgRobot {
 		}
 		
 		arm.update();
+		intake.update();
 	}
 
 	@Override
