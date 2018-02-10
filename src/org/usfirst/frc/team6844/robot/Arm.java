@@ -1,18 +1,11 @@
 package org.usfirst.frc.team6844.robot;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.uvstem.borg.BorgSubsystem;
-import org.uvstem.borg.logging.Message;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class Arm extends BorgSubsystem{
+public class Arm {
 
 	private TalonSRX armMotor = new TalonSRX(5);
 	private DigitalInput bottomSwitch = new DigitalInput(0);
@@ -88,23 +81,4 @@ public class Arm extends BorgSubsystem{
 					break;
 				}
 	}
-
-	@Override
-	public List<Message> logMessages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<String> getStateLogFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Object> logState() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

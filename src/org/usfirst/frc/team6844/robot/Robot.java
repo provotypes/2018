@@ -7,20 +7,13 @@
 
 package org.usfirst.frc.team6844.robot;
 
-import java.io.File;
-
 import org.usfirst.frc.team6844.robot.Arm.Position;
-import org.usfirst.frc.team6844.robot.Intake.State;
-import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
-import org.uvstem.borg.logging.CSVStateLogger;
-import org.uvstem.borg.logging.TextFileMessageLogger;
 
-import edu.wpi.cscore.CameraServerJNI;
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.TimedRobot;
 
-public class Robot extends BorgRobot {
+public class Robot extends TimedRobot {
 
 	Drivetrain drivetrain;
 	Intake intake;
@@ -31,36 +24,14 @@ public class Robot extends BorgRobot {
 
 	@Override
 	public void robotInit() {
-		super.robotInit();
-		//setPowerDistributionPanel(new PowerDistributionPanel(0));
-
-		try {
-			setStateLogger(new CSVStateLogger(new File("/logs/log.csv")));
-			setMessageLogger(new TextFileMessageLogger(new File("/logs/log.txt")));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		CameraServer.getInstance().startAutomaticCapture();
 
 		drivetrain = new Drivetrain();
-		registerSubsystem("drivetrain", drivetrain);
-
 		intake = new Intake();
-		registerSubsystem("intake", intake);
-
 		arm = new Arm();
-		registerSubsystem("arm", arm);
 
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
-
-		try {
-			initPublicKey(new File("/key/key.pub"));
-			initAutoScripts(new File("/home/lvuser/auto"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -75,13 +46,10 @@ public class Robot extends BorgRobot {
 	}
 
 	@Override
-	public void teleopInit() {
-		super.teleopPeriodic();
-	}
+	public void teleopInit() {}
 
 	@Override
 	public void teleopPeriodic() {
-		super.teleopPeriodic();
 		drivetrain.arcadeDrive(gamepadDriver.getRightY(), gamepadDriver.getLeftX(), true);
 		
 		// Operator Y button, sets position of switch to top
@@ -125,19 +93,8 @@ public class Robot extends BorgRobot {
 	}
 
 	@Override
-	public void testInit() {
-		super.testInit();
-
-		try {
-			initPublicKey(new File("/home/lvuser/key.pub"));
-			initAutoScripts(new File("/home/lvuser/auto"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	public void testInit() {}
 
 	@Override
-	public void testPeriodic() {
-		super.testPeriodic();
-	}
+	public void testPeriodic() {}
 }

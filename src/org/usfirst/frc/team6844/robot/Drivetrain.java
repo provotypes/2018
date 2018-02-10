@@ -1,18 +1,11 @@
 package org.usfirst.frc.team6844.robot;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.uvstem.borg.BorgSubsystem;
-import org.uvstem.borg.logging.Message;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 
-public class Drivetrain extends BorgSubsystem {
+public class Drivetrain {
 
 	private final double INCHES_PER_PULSE = (6 * Math.PI) / 360; //in inches
 
@@ -54,24 +47,6 @@ public class Drivetrain extends BorgSubsystem {
 
 	public void arcadeDrive(double speed, double turn, boolean squareInputs) {
 		arcadeDrive(sign(speed) * Math.pow(speed, 2), sign(turn) * Math.pow(turn, 2));
-	}
-
-	@Override
-	public List<Message> logMessages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<String> getStateLogFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Object> logState() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	private double sign(double magnitude) {

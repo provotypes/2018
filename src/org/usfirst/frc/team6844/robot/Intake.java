@@ -1,16 +1,9 @@
 package org.usfirst.frc.team6844.robot;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.uvstem.borg.BorgSubsystem;
-import org.uvstem.borg.logging.Message;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class Intake extends BorgSubsystem {
+public class Intake {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
@@ -54,23 +47,4 @@ public class Intake extends BorgSubsystem {
 	public void stopIntake() {
 		this.state = State.STOP;
 	}
-
-	@Override
-	public List<Message> logMessages() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<String> getStateLogFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, Object> logState() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
