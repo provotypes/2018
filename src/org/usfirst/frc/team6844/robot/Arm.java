@@ -40,45 +40,49 @@ public class Arm {
 	}
 
 	public void update() {
-			switch (position) {
-				case TOP:
-					counter = 0;
-					
-					if (!topSwitch.get()) {
+		System.out.println("Position: " + position);
+		System.out.println("Top: " + topSwitch.get());
+		System.out.println("Bottom: " + bottomSwitch.get());
+		
+		switch (position) {
+			case TOP:
+				counter = 0;
+				
+				if (topSwitch.get()) {
+					armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
+				} else {
+					armMotor.set(ControlMode.PercentOutput, TOP_HOLDING_OUTPUT);
+				}
+				break;
+
+			case MIDDLE:					
+				if (previousPosition == Position.BOTTOM) {
+					if (counter < TICKS_UP) {
 						armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
 					} else {
-						armMotor.set(ControlMode.PercentOutput, TOP_HOLDING_OUTPUT);
+						armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
 					}
 					break;
-
-				case MIDDLE:					
-					if (previousPosition == Position.BOTTOM) {
-						if (counter < TICKS_UP) {
-							armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
-						} else {
-							armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
-						}
-						break;
-					} else {
-						if (counter < TICKS_DOWN) {
-							armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
-						} else {
-							armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
-						}
-					}
-					
-					counter++;
-					break;
-
-				case BOTTOM:
-					counter = 0;
-					
-					if (!bottomSwitch.get()) {
+				} else  if (previousPosition == Position.TOP){
+					if (counter < TICKS_DOWN) {
 						armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
 					} else {
-						armMotor.set(ControlMode.PercentOutput, BOTTOM_HOLDING_OUTPUT);
+						armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
 					}
-					break;
 				}
+				
+				counter++;
+				break;
+
+			case BOTTOM:
+				counter = 0;
+				
+				if (bottomSwitch.get()) {
+					armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
+				} else {
+					armMotor.set(ControlMode.PercentOutput, BOTTOM_HOLDING_OUTPUT);
+				}
+				break;
+			}
 	}
 }
