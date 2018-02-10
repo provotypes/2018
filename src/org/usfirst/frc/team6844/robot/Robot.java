@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class Robot extends BorgRobot {
 
-	final double DISTANCE_PER_PULSE = (6 * Math.PI)/360; //in inches
-
 	Drivetrain drivetrain;
 	Intake intake;
 	Arm arm;
