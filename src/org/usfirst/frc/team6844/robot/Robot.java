@@ -9,6 +9,7 @@ package org.usfirst.frc.team6844.robot;
 
 import java.io.File;
 
+import org.usfirst.frc.team6844.robot.Arm.Position;
 import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
@@ -23,8 +24,8 @@ public class Robot extends BorgRobot {
 	Drivetrain drivetrain;
 	Intake intake;
 	Arm arm;
-	LogitechGamepadController gamepad_driver;
-	LogitechGamepadController gamepad_operator;
+	LogitechGamepadController gamepadDriver;
+	LogitechGamepadController gamepadOperator;
 
 	@Override
 	public void robotInit() {
@@ -48,8 +49,8 @@ public class Robot extends BorgRobot {
 
 		arm = new Arm();
 
-		gamepad_driver = new LogitechGamepadController(1);
-		gamepad_operator = new LogitechGamepadController(2);
+		gamepadDriver = new LogitechGamepadController(1);
+		gamepadOperator = new LogitechGamepadController(2);
 
 		try {
 			initPublicKey(new File("/key/key.pub"));
@@ -64,7 +65,6 @@ public class Robot extends BorgRobot {
 		super.autonomousInit();
 
 		drivetrain.resetGyro();
-		drivetrain.encoder.setDistancePerPulse(DISTANCE_PER_PULSE);
 	}
 
 	@Override
@@ -80,43 +80,46 @@ public class Robot extends BorgRobot {
 	@Override
 	public void teleopPeriodic() {
 		super.teleopPeriodic();
-		drivetrain.arcadeDrive(gamepad_driver.getRightY(), gamepad_driver.getLeftX(), true);
+		drivetrain.arcadeDrive(gamepadDriver.getRightY(), gamepadDriver.getLeftX(), true);
 
 		//System.out.println(drivetrain.gyro.getAngle());
-
-		//Operator right stick, controls arm
-		//if bottom limit switch is pressed and arm is going down, stop arm
-		if (arm.getBottomSwitchPressed() && (gamepad_operator.getRightY() * -1) < 0) {
-		    arm.operateArm(0);
-
-		//if bottom limit switch is pressed and arm is going down, stop arm
-		} else if (arm.getTopSwitchPressed() && (gamepad_operator.getRightY() * -1) > 0){
-		    arm.operateArm(0);
-
-		//if bottom limit switch is not pressed, or arm is going up, allow the input
-		} else {
-		    arm.operateArm(-1 * gamepad_operator.getRightY());
+		
+		// Operator Y button, sets position of switch to top
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.Y_BUTTON)) {
+			arm.setPosition(Position.TOP);
 		}
-
+		
+		// Operator X/B button, sets position of switch to middle
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
+			arm.setPosition(Position.MIDDLE);
+		}
+		
+		// Operator A button, sets position of switch to bottom
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.A_BUTTON)) {
+			arm.setPosition(Position.BOTTOM);
+		}
+		
 		//Driver start button, nerfs the speed
-		if (gamepad_driver.getRawButtonPressed(gamepad_driver.START_BUTTON)) {
+		if (gamepadDriver.getRawButtonPressed(gamepadDriver.START_BUTTON)) {
 			drivetrain.nerfSpeed();
 		}
 
 		//Driver A button, switches forwards and backwards
-		if (gamepad_driver.getRawButtonPressed(gamepad_driver.A_BUTTON)) {
+		if (gamepadDriver.getRawButtonPressed(gamepadDriver.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
 
 		//Operator left bumper, intake out
 		//Operator right bumper, intake in
-		if (gamepad_operator.getRightBumper()) {
+		if (gamepadOperator.getRightBumper()) {
 			intake.intakeIn();
-		} else if (gamepad_operator.getLeftBumper()){
+		} else if (gamepadOperator.getLeftBumper()){
 		    intake.intakeOut();
 		} else {
 		    intake.stopIntake();
 		}
+		
+		arm.update();
 	}
 
 	@Override
