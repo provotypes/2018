@@ -7,9 +7,6 @@ import java.util.Set;
 import org.uvstem.borg.BorgSubsystem;
 import org.uvstem.borg.logging.Message;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
