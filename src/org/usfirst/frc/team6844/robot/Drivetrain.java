@@ -11,7 +11,6 @@ public class Drivetrain {
 
 	Spark spark_left1, spark_left2, spark_right1, spark_right2;
 	ADXRS450_Gyro gyro;
-	Encoder encoder;
 
 	private double driveScalingFactor = 1;
 
@@ -25,9 +24,6 @@ public class Drivetrain {
 		spark_right2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
-		encoder = new Encoder(0, 1);
-
-		encoder.setDistancePerPulse(INCHES_PER_PULSE);
 	}
 
 	public void tankDrive(double left, double right) {
