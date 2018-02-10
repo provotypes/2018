@@ -17,6 +17,9 @@ public class LogitechGamepadController extends Joystick {
     public final int RIGHT_BUMPER = 6;
     public final int START_BUTTON = 8;
     
+    public final int DPAD_Y_AXIS = 5;
+    public final int DPAD_X_AXIS = 6;
+    
     //Axes
     public final int LEFT_X_AXIS = 0;
     public final int LEFT_Y_AXIS = 1;
@@ -79,5 +82,13 @@ public class LogitechGamepadController extends Joystick {
     
     public double getRightTrigger() {
         return super.getRawAxis(RIGHT_TRIGGER);
+    }
+    
+    public double getDpadX() {
+    	return super.getRawAxis(DPAD_X_AXIS);
+    }
+    
+    public double getDpadY() {
+    	return super.getRawAxis(DPAD_Y_AXIS);
     }
 }
