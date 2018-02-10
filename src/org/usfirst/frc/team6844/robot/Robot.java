@@ -10,6 +10,7 @@ package org.usfirst.frc.team6844.robot;
 import java.io.File;
 
 import org.usfirst.frc.team6844.robot.Arm.Position;
+import org.usfirst.frc.team6844.robot.Intake.State;
 import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
@@ -111,12 +112,12 @@ public class Robot extends BorgRobot {
 
 		//Operator left bumper, intake out
 		//Operator right bumper, intake in
-		if (gamepadOperator.getRightBumper()) {
-			intake.intakeIn();
-		} else if (gamepadOperator.getLeftBumper()){
+		if (Math.abs(gamepadOperator.getLeftX()) > 0) {
+			intake.stopIntake();
+		} else if (gamepadOperator.getLeftY() < 0){
 		    intake.intakeOut();
-		} else {
-		    intake.stopIntake();
+		} else if (gamepadOperator.getLeftY() > 0){
+		    intake.intakeIn();
 		}
 		
 		arm.update();
