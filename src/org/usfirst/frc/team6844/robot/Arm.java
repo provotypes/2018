@@ -18,6 +18,7 @@ public class Arm {
 
 	private final int TICKS_UP = 60;
 	private final int TICKS_DOWN = 150 - TICKS_UP;
+	private final int TICKS_UP_DOWN = 3 * (TICKS_UP + TICKS_DOWN);
 
 	private final double TRAVEL_UP_OUTPUT = .6;
 	private final double TRAVEL_DOWN_OUTPUT = -.4;
@@ -27,29 +28,30 @@ public class Arm {
 	private final double BOTTOM_HOLDING_OUTPUT = -.2;
 
 	enum Position {
-			TOP,
-			MIDDLE,
-			BOTTOM
+		TOP,
+		MIDDLE,
+		BOTTOM
 	}
 
 	public void setTargetPosition(Position position) {
 		if (position != this.position) {
+			counter = 0;
 			this.previousPosition = this.position;
 			this.position = position;
 		}
 	}
 
 	public void update() {
+		counter++; //At 50Hz, the counter will overflow in about 1.3 years.
 		
 		switch (position) {
 			case TOP:
-				counter = 0;
-				
-				if (topSwitch.get()) {
+				if (topSwitch.get() && counter < TICKS_UP_DOWN) {
 					armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
 				} else {
 					armMotor.set(ControlMode.PercentOutput, TOP_HOLDING_OUTPUT);
 				}
+				
 				break;
 
 			case MIDDLE:					
@@ -67,18 +69,16 @@ public class Arm {
 					}
 				}
 				
-				counter++;
 				break;
 
-			case BOTTOM:
-				counter = 0;
-				
-				if (bottomSwitch.get()) {
+			case BOTTOM:				
+				if (bottomSwitch.get() && counter < TICKS_UP_DOWN) {
 					armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
 				} else {
 					armMotor.set(ControlMode.PercentOutput, BOTTOM_HOLDING_OUTPUT);
 				}
+				
 				break;
-			}
+		}
 	}
 }
