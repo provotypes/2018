@@ -20,8 +20,8 @@ public class Drivetrain {
 		spark_right1 = new Spark(2);
 		spark_right2 = new Spark(3);
 
-		spark_right1.setInverted(true);
-		spark_right2.setInverted(true);
+		spark_left1.setInverted(true);
+		spark_left2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 	}
@@ -38,7 +38,7 @@ public class Drivetrain {
 	}
 
 	public void arcadeDrive(double speed, double turn) {
-		tankDrive(speed + turn, speed - turn);
+		tankDrive(speed - turn, speed + turn);
 	}
 
 	public void arcadeDrive(double speed, double turn, boolean squareInputs) {
