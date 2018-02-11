@@ -1,27 +1,24 @@
 package org.usfirst.frc.team6844.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 
 public class Drivetrain {
 
-	private final double INCHES_PER_PULSE = (6 * Math.PI) / 360; //in inches
-
-	Spark spark_left1, spark_left2, spark_right1, spark_right2;
+	Spark sparkLeft1, sparkLeft2, sparkRight1, sparkRight2;
 	ADXRS450_Gyro gyro;
 
 	private double driveScalingFactor = 1;
 
 	public Drivetrain() {
-		spark_left1 = new Spark(0);
-		spark_left2 = new Spark(1);
-		spark_right1 = new Spark(2);
-		spark_right2 = new Spark(3);
+		sparkLeft1 = new Spark(0);
+		sparkLeft2 = new Spark(1);
+		sparkRight1 = new Spark(2);
+		sparkRight2 = new Spark(3);
 
-		spark_left1.setInverted(true);
-		spark_left2.setInverted(true);
+		sparkLeft1.setInverted(true);
+		sparkLeft2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
 	}
@@ -30,11 +27,11 @@ public class Drivetrain {
 		left *= driveScalingFactor;
 		right *= driveScalingFactor;
 
-		spark_left1.set(left);
-		spark_left2.set(left);
+		sparkLeft1.set(left);
+		sparkLeft2.set(left);
 
-		spark_right1.set(right);
-		spark_right2.set(right);
+		sparkRight1.set(right);
+		sparkRight2.set(right);
 	}
 
 	public void arcadeDrive(double speed, double turn) {
@@ -64,11 +61,11 @@ public class Drivetrain {
 	}
 
 	public void reverseDriveDirection() {
-		spark_left1.setInverted(!spark_left1.getInverted());
-		spark_left2.setInverted(!spark_left2.getInverted());
+		sparkLeft1.setInverted(!sparkLeft1.getInverted());
+		sparkLeft2.setInverted(!sparkLeft2.getInverted());
 
-		spark_right1.setInverted(!spark_right1.getInverted());
-		spark_right2.setInverted(!spark_right2.getInverted());
+		sparkRight1.setInverted(!sparkRight1.getInverted());
+		sparkRight2.setInverted(!sparkRight2.getInverted());
 	}
 
 	public void setScalingFactor(double scale) {

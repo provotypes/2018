@@ -7,7 +7,9 @@ public class Intake {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
-		
+
+	private State state = State.STOP;
+
 	public enum State {
 		INTAKE,
 		TURN,
@@ -18,25 +20,32 @@ public class Intake {
 	public Intake() {
 		motorLeft.setInverted(true);
 	}
-	
-	public void update(State state) {
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public void update() {
 		switch(state) {
-		case INTAKE:
-			motorLeft.set(ControlMode.PercentOutput, .5);
-			motorRight.set(ControlMode.PercentOutput, .6);
-			break;
-		case TURN:
-			motorLeft.set(ControlMode.PercentOutput, .4);
-			motorRight.set(ControlMode.PercentOutput, -.4);
-			break;
-		case SHOOT:
-			motorLeft.set(ControlMode.PercentOutput, -.4);
-			motorRight.set(ControlMode.PercentOutput, -.4);
-			break;
-		case STOP:
-			motorLeft.set(ControlMode.PercentOutput, .1);
-			motorRight.set(ControlMode.PercentOutput, .1);
-			break;
+			case INTAKE:
+				motorLeft.set(ControlMode.PercentOutput, .5);
+				motorRight.set(ControlMode.PercentOutput, .6);
+				break;
+
+			case TURN:
+				motorLeft.set(ControlMode.PercentOutput, .4);
+				motorRight.set(ControlMode.PercentOutput, -.4);
+				break;
+
+			case SHOOT:
+				motorLeft.set(ControlMode.PercentOutput, -.4);
+				motorRight.set(ControlMode.PercentOutput, -.4);
+				break;
+
+			case STOP:
+				motorLeft.set(ControlMode.PercentOutput, .1);
+				motorRight.set(ControlMode.PercentOutput, .1);
+				break;
 		}
 	}
 }

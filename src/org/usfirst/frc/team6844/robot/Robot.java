@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
 	Drivetrain drivetrain;
 	Intake intake;
 	Arm arm;
-	
+
 	LogitechGamepadController gamepadDriver;
 	LogitechGamepadController gamepadOperator;
 
@@ -42,9 +42,7 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousPeriodic() {
-		super.autonomousPeriodic();
-	}
+	public void autonomousPeriodic() {}
 
 	@Override
 	public void teleopInit() {}
@@ -52,15 +50,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		operateDrivetrain();
-		
 		operateArm();
-
 		operateIntake();
 	}
 
 	private void operateDrivetrain() {
 		drivetrain.arcadeDrive(gamepadDriver.getLeftY(), gamepadDriver.getRightX());
-		
+
 		//Driver start button, nerfs the speed
 		if (gamepadDriver.getRawButtonPressed(gamepadDriver.START_BUTTON)) {
 			drivetrain.nerfSpeed();
@@ -78,7 +74,7 @@ public class Robot extends TimedRobot {
 			arm.setTargetPosition(Position.TOP);
 		}
 		// Operator X/B button, sets position of switch to middle
-		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || 
+		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) ||
 				gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
 			arm.setTargetPosition(Position.MIDDLE);
 		}
@@ -86,24 +82,23 @@ public class Robot extends TimedRobot {
 		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.A_BUTTON)) {
 			arm.setTargetPosition(Position.BOTTOM);
 		}
+
 		arm.update();
 	}
 
 	private void operateIntake() {
-		//operate intake
+		// Bind intake state to operator buttons
 		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_STICK_IN)) {
-			intake.update(State.TURN);
-			//intake.turnCube();
+			intake.setState(State.TURN);
 		} else if (Math.abs(gamepadOperator.getLeftX()) > .5) {
-			intake.update(State.STOP);
-			//intake.stopIntake();
+			intake.setState(State.STOP);
 		} else if (gamepadOperator.getLeftY() < -.5) {
-			intake.update(State.SHOOT);
-		    //intake.intakeOut();
+			intake.setState(State.SHOOT);
 		} else if (gamepadOperator.getLeftY() > .5) {
-			intake.update(State.INTAKE);
-		    //intake.intakeIn();
+			intake.setState(State.INTAKE);
 		}
+
+		intake.update();
 	}
 
 	@Override

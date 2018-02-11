@@ -43,7 +43,7 @@ public class Arm {
 
 	public void update() {
 		counter++; //At 50Hz, the counter will overflow in about 1.3 years.
-		
+
 		switch (position) {
 			case TOP:
 				if (topSwitch.get() && counter < TICKS_UP_DOWN) {
@@ -51,10 +51,10 @@ public class Arm {
 				} else {
 					armMotor.set(ControlMode.PercentOutput, TOP_HOLDING_OUTPUT);
 				}
-				
+
 				break;
 
-			case MIDDLE:					
+			case MIDDLE:
 				if (previousPosition == Position.BOTTOM) {
 					if (counter < TICKS_UP) {
 						armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
@@ -68,16 +68,16 @@ public class Arm {
 						armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
 					}
 				}
-				
+
 				break;
 
-			case BOTTOM:				
+			case BOTTOM:
 				if (bottomSwitch.get() && counter < TICKS_UP_DOWN) {
 					armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
 				} else {
 					armMotor.set(ControlMode.PercentOutput, BOTTOM_HOLDING_OUTPUT);
 				}
-				
+
 				break;
 		}
 	}
