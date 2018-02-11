@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class Arm {
 
 	private TalonSRX armMotor = new TalonSRX(5);
-	private DigitalInput bottomSwitch = new DigitalInput(0);
-	private DigitalInput topSwitch = new DigitalInput(1);
+	private DigitalInput bottomSwitch = new DigitalInput(1);
+	private DigitalInput topSwitch = new DigitalInput(0);
 
 	private int counter = 0;
 
 	private Position position = Position.BOTTOM;
 	private Position previousPosition = Position.BOTTOM;
 
-	private final int TICKS_UP = 25;
-	private final int TICKS_DOWN = 50 - TICKS_UP;
+	private final int TICKS_UP = 60;
+	private final int TICKS_DOWN = 150 - TICKS_UP;
 
 	private final double TRAVEL_UP_OUTPUT = .6;
 	private final double TRAVEL_DOWN_OUTPUT = -.4;
@@ -32,7 +32,7 @@ public class Arm {
 			BOTTOM
 	}
 
-	public void setPosition(Position position) {
+	public void setTargetPosition(Position position) {
 		if (position != this.position) {
 			this.previousPosition = this.position;
 			this.position = position;
@@ -40,9 +40,6 @@ public class Arm {
 	}
 
 	public void update() {
-		System.out.println("Position: " + position);
-		System.out.println("Top: " + topSwitch.get());
-		System.out.println("Bottom: " + bottomSwitch.get());
 		
 		switch (position) {
 			case TOP:
@@ -62,7 +59,6 @@ public class Arm {
 					} else {
 						armMotor.set(ControlMode.PercentOutput, MIDDLE_HOLDING_OUTPUT);
 					}
-					break;
 				} else  if (previousPosition == Position.TOP){
 					if (counter < TICKS_DOWN) {
 						armMotor.set(ControlMode.PercentOutput, TRAVEL_DOWN_OUTPUT);
