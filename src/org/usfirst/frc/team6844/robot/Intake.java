@@ -7,44 +7,36 @@ public class Intake {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
-	
-	private State state = State.STOP;
-	
+		
 	public enum State {
 		INTAKE,
+		TURN,
 		SHOOT,
 		STOP
 	}
 
 	public Intake() {
-		motorRight.setInverted(true);
+		motorLeft.setInverted(true);
 	}
 	
-	public void update() {
+	public void update(State state) {
 		switch(state) {
 		case INTAKE:
-			motorLeft.set(ControlMode.PercentOutput, .8);
-			motorRight.set(ControlMode.PercentOutput, 1);
+			motorLeft.set(ControlMode.PercentOutput, .5);
+			motorRight.set(ControlMode.PercentOutput, .6);
+			break;
+		case TURN:
+			motorLeft.set(ControlMode.PercentOutput, .4);
+			motorRight.set(ControlMode.PercentOutput, -.4);
 			break;
 		case SHOOT:
-			motorLeft.set(ControlMode.PercentOutput, -1);
-			motorRight.set(ControlMode.PercentOutput, -1);
+			motorLeft.set(ControlMode.PercentOutput, -.4);
+			motorRight.set(ControlMode.PercentOutput, -.4);
 			break;
 		case STOP:
-			motorLeft.set(ControlMode.PercentOutput, 0);
-			motorRight.set(ControlMode.PercentOutput, 0);
+			motorLeft.set(ControlMode.PercentOutput, .1);
+			motorRight.set(ControlMode.PercentOutput, .1);
+			break;
 		}
-	}
-
-	public void intakeIn() {
-		this.state = State.INTAKE;
-	}
-
-	public void intakeOut() {
-		this.state = State.SHOOT;
-	}
-
-	public void stopIntake() {
-		this.state = State.STOP;
 	}
 }
