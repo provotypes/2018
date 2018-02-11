@@ -8,6 +8,7 @@
 package org.usfirst.frc.team6844.robot;
 
 import org.usfirst.frc.team6844.robot.Arm.Position;
+import org.usfirst.frc.team6844.robot.Intake.State;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
 
 import edu.wpi.first.wpilibj.CameraServer;
@@ -50,23 +51,15 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		drivetrain.arcadeDrive(gamepadDriver.getRightY(), gamepadDriver.getLeftX(), true);
+		operateDrivetrain();
 		
-		// Operator Y button, sets position of switch to top
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.Y_BUTTON)) {
-			arm.setPosition(Position.TOP);
-		}
-		
-		// Operator X/B button, sets position of switch to middle
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || 
-				gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
-			arm.setPosition(Position.MIDDLE);
-		}
-		
-		// Operator A button, sets position of switch to bottom
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.A_BUTTON)) {
-			arm.setPosition(Position.BOTTOM);
-		}
+		operateArm();
+
+		operateIntake();
+	}
+
+	private void operateDrivetrain() {
+		drivetrain.arcadeDrive(gamepadDriver.getLeftY(), gamepadDriver.getRightX());
 		
 		//Driver start button, nerfs the speed
 		if (gamepadDriver.getRawButtonPressed(gamepadDriver.START_BUTTON)) {
@@ -77,19 +70,40 @@ public class Robot extends TimedRobot {
 		if (gamepadDriver.getRawButtonPressed(gamepadDriver.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
+	}
 
-		//Operator left bumper, intake out
-		//Operator right bumper, intake in
-		if (Math.abs(gamepadOperator.getLeftX()) > 0) {
-			intake.stopIntake();
-		} else if (gamepadOperator.getLeftY() < 0){
-		    intake.intakeOut();
-		} else if (gamepadOperator.getLeftY() > 0){
-		    intake.intakeIn();
+	private void operateArm() {
+		// Operator Y button, sets position of switch to top
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.Y_BUTTON)) {
+			arm.setTargetPosition(Position.TOP);
 		}
-		
+		// Operator X/B button, sets position of switch to middle
+		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) || 
+				gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
+			arm.setTargetPosition(Position.MIDDLE);
+		}
+		// Operator A button, sets position of switch to bottom
+		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.A_BUTTON)) {
+			arm.setTargetPosition(Position.BOTTOM);
+		}
 		arm.update();
-		intake.update();
+	}
+
+	private void operateIntake() {
+		//operate intake
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_STICK_IN)) {
+			intake.update(State.TURN);
+			//intake.turnCube();
+		} else if (Math.abs(gamepadOperator.getLeftX()) > .5) {
+			intake.update(State.STOP);
+			//intake.stopIntake();
+		} else if (gamepadOperator.getLeftY() < -.5) {
+			intake.update(State.SHOOT);
+		    //intake.intakeOut();
+		} else if (gamepadOperator.getLeftY() > .5) {
+			intake.update(State.INTAKE);
+		    //intake.intakeIn();
+		}
 	}
 
 	@Override
