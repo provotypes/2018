@@ -240,9 +240,8 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 */
 	@Override
 	public Map<String, Object> logState() {
-		stateBuffer.put("voltage", DriverStation.getInstance().getBatteryVoltage());
-		
 		if (powerDistributionPanel != null) {
+			stateBuffer.put("voltage", powerDistributionPanel.getVoltage());
 			stateBuffer.put("current", powerDistributionPanel.getTotalCurrent());
 		} else {
 			stateBuffer.put("current", null);
