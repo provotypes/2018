@@ -6,17 +6,17 @@ import java.util.Set;
 /**
  * A MessageLogger is an abstract class that specifies an interface for
  * classes that log robot messages, typically events.  Each object that
- * generates messages is to be registered and then the log function is 
+ * generates messages is to be registered and then the log function is
  * called periodically.
  *
  */
 public abstract class MessageLogger {
-	
+
 	/**
 	 * The set of registered EventLoggables.
 	 */
 	protected Set<MessageLoggable> registeredLoggables = new HashSet<>();
-	
+
 	/**
 	 * Register the MessageLoggable for later logging.
 	 * @param String name the name that identifies the MessageLoggable
@@ -25,7 +25,7 @@ public abstract class MessageLogger {
 	public void register(String name, MessageLoggable loggable) {
 		registeredLoggables.add(loggable);
 	}
-	
+
 	/**
 	 * Log messages from the the registered MessageLoggables.
 	 */

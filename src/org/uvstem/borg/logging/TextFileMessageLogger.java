@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 public class TextFileMessageLogger extends MessageLogger {
-	
+
 	/**
 	 * A writer to write to the given file.
 	 */
 	private PrintWriter out;
-	
+
 	/**
 	 * Instantiate a TextFileMessageLogger.
 	 * @param fileToLogInto The file to log to.
@@ -19,7 +19,7 @@ public class TextFileMessageLogger extends MessageLogger {
 	public TextFileMessageLogger(File fileToLogInto) throws FileNotFoundException {
 		out = new PrintWriter(fileToLogInto);
 	}
-	
+
 	/**
 	 * Print messages to the file.
 	 */
@@ -30,6 +30,8 @@ public class TextFileMessageLogger extends MessageLogger {
 				out.println("[" + m.getTypeAsString() + "][" + m.getTimestamp() + "] " + m.getMessage());
 				out.flush();
 			}
+
+			l.afterLogMessages();
 		}
 	}
 }

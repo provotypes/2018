@@ -14,4 +14,9 @@ public interface MessageLoggable {
 	 * @return list of messages to log for this class.
 	 */
 	public List<Message> logMessages();
+
+	/**
+	 * Callback to allow user to clean up buffers.
+	 */
+	public abstract void afterLogMessages();
 }

@@ -201,7 +201,6 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	private void log() {
 		if (messageLogger != null) {
 			messageLogger.log();
-			messageBuffer.clear();
 		}
 		
 		if (stateLogger != null) {
@@ -215,6 +214,16 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	@Override
 	public List<Message> logMessages() {
 		return messageBuffer;
+	}
+	
+	/**
+	 * Clear the internal buffer of messages to log.
+	 */
+	@Override
+	public void afterLogMessages() {
+		if (messageBuffer != null) {
+			messageBuffer.clear();
+		}		
 	}
 
 	/**
