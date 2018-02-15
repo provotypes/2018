@@ -5,7 +5,7 @@ package org.uvstem.borg.logging;
  * the message is immutable.
  */
 public class Message implements Comparable<Message> {
-	
+
 	/**
 	 * This class refers to the type or severity or log message.
 	 */
@@ -16,26 +16,26 @@ public class Message implements Comparable<Message> {
 		WARNING,
 		SEVERE
 	}
-	
+
 	/**
 	 * A timestamp that indicates when the message was generated.  Defaults to the
 	 * value of System.currentTimeMillis() if not otherwise provided.
 	 */
 	private long timestamp;
-	
+
 	/**
 	 * The body of the message.
 	 */
 	private String message;
-	
+
 	/**
 	 * The type of the message.
 	 */
 	private Type type;
-	
+
 	/**
 	 * Create a new message.
-	 * 
+	 *
 	 * @param timestamp The time when the message was generated.
 	 * @param message The body of the message.
 	 * @param type The message type or severity.
@@ -45,10 +45,10 @@ public class Message implements Comparable<Message> {
 		this.message = message;
 		this.type = type;
 	}
-	
+
 	/**
 	 * Create a new message, using System.currentTimeMillis() for the timestamp.
-	 * 
+	 *
 	 * @param message The body of the message.
 	 * @param type The message type or severity.
 	 */
@@ -59,15 +59,15 @@ public class Message implements Comparable<Message> {
 	public long getTimestamp() {
 		return timestamp;
 	}
-	
+
 	public String getMessage() {
 		return message;
 	}
-	
+
 	public Type getType() {
 		return type;
 	}
-	
+
 	public String getTypeAsString() {
 		switch (type) {
 			case DEBUG:
@@ -84,7 +84,7 @@ public class Message implements Comparable<Message> {
 				return null;
 		}
 	}
-	
+
 	/**
 	 * Sort messages by timestamp.  Not safe against integer overflow, though
 	 * it shouldn't be a problem for a typical FRC match.

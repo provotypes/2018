@@ -10,12 +10,12 @@ import java.util.Map;
  *
  */
 public abstract class StateLogger {
-	
+
 	/**
 	 * The set of registered StateLoggables.
 	 */
 	protected Map<String, StateLoggable> registeredLoggables = new HashMap<>();
-	
+
 	/**
 	 * Register the loggable for later logging.
 	 * @param String name the name that identifies the StateLoggable
@@ -24,7 +24,7 @@ public abstract class StateLogger {
 	public void register(String name, StateLoggable loggable) {
 		registeredLoggables.put(name, loggable);
 	}
-	
+
 	/**
 	 * Log the registered loggables.
 	 */

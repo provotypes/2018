@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 public class CSVStateLogger extends StateLogger {
 	PrintWriter out;
 	boolean printedHeader = false;
-	
+
 	/**
 	 * Instantiate a CSVStateLogger.
 	 * @param fileToLogInto The file to log into.
@@ -19,7 +19,7 @@ public class CSVStateLogger extends StateLogger {
 	public CSVStateLogger(File fileToLogInto) throws FileNotFoundException {
 		this.out = new PrintWriter(fileToLogInto);
 	}
-	
+
 	/**
 	 * Print the field header if necessary, then print out CSV line.
 	 */
@@ -32,20 +32,20 @@ public class CSVStateLogger extends StateLogger {
 					out.print("," + l + "/" + s);
 				}
 			}
-			
+
 			out.println();
 			out.flush();
-			
+
 			printedHeader = true;
 		}
-		
+
 		for (String l : registeredLoggables.keySet()) {
 			out.print(System.currentTimeMillis());
 			for (String f : registeredLoggables.get(l).logState().keySet()) {
 				out.print("," + registeredLoggables.get(l).logState().get(f));
 			}
 		}
-		
+
 		out.println();
 		out.flush();
 	}
