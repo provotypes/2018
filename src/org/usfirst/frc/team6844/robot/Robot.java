@@ -7,14 +7,20 @@
 
 package org.usfirst.frc.team6844.robot;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import org.usfirst.frc.team6844.robot.Arm.Position;
 import org.usfirst.frc.team6844.robot.Intake.State;
+import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
+import org.uvstem.borg.logging.CSVStateLogger;
+import org.uvstem.borg.logging.TextFileMessageLogger;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
-public class Robot extends TimedRobot {
+public class Robot extends BorgRobot {
 
 	Drivetrain drivetrain;
 	Intake intake;
@@ -25,14 +31,54 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+		super.robotInit();
+		
+		long initTime = System.currentTimeMillis();
+		
 		CameraServer.getInstance().startAutomaticCapture();
 
 		drivetrain = new Drivetrain();
 		intake = new Intake();
 		arm = new Arm();
-
+		
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
+		
+		registerSubsystem("drivetrain", drivetrain);
+		registerSubsystem("intake", intake);
+		registerSubsystem("arm", arm);
+		
+		setPowerDistributionPanel(new PowerDistributionPanel());
+		
+		// Set up logging warnings, information, etc. to text file.
+		try {
+			File textFile = new File("/logs/messages/" + initTime + ".txt");
+			textFile.createNewFile();
+			
+			setMessageLogger(new TextFileMessageLogger(textFile));
+		} catch (Exception e) {
+			System.err.println("Unable to log messages to text file!");
+			e.printStackTrace();
+		}
+		
+		// Set up logging robot state to a CSV file.
+		try {
+			File csvFile = new File("/logs/state/" + initTime + ".csv");
+			csvFile.createNewFile();
+			
+			setStateLogger(new CSVStateLogger(csvFile));
+		} catch (Exception e) {
+			System.err.println("Unable to log state to csv!");
+			e.printStackTrace();
+		}
+		
+		// Initialize autonomous scripting system.
+		try {
+			initAutoScripts(new File("/key/pub.key"), new File("/scripts"));
+		} catch (Exception e) {
+			System.err.println("Unable to initalize auto script!s");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -42,13 +88,19 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
+		super.autonomousPeriodic();
+	}
 
 	@Override
-	public void teleopInit() {}
+	public void teleopInit() {
+		super.teleopInit();
+	}
 
 	@Override
 	public void teleopPeriodic() {
+		super.teleopPeriodic();
+		
 		operateDrivetrain();
 		operateArm();
 		operateIntake();
@@ -102,8 +154,12 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void testInit() {}
+	public void testInit() {
+		super.testInit();
+	}
 
 	@Override
-	public void testPeriodic() {}
+	public void testPeriodic() {
+		super.testPeriodic();
+	}
 }
