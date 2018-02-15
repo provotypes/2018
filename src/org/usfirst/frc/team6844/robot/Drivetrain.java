@@ -1,15 +1,28 @@
 package org.usfirst.frc.team6844.robot;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.uvstem.borg.BorgSubsystem;
+import org.uvstem.borg.logging.Message;
+import org.uvstem.borg.logging.Message.Type;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 
-public class Drivetrain {
+public class Drivetrain extends BorgSubsystem {
 
 	Spark sparkLeft1, sparkLeft2, sparkRight1, sparkRight2;
 	ADXRS450_Gyro gyro;
+	Encoder encoderLeft, encoderRight;
 
 	private double driveScalingFactor = 1;
+
+	private double left, right;
 
 	public Drivetrain() {
 		sparkLeft1 = new Spark(0);
@@ -21,17 +34,14 @@ public class Drivetrain {
 		sparkLeft2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
+		
+		encoderLeft = new Encoder(2, 3);
+		encoderRight = new Encoder(4, 5);
 	}
 
 	public void tankDrive(double left, double right) {
-		left *= driveScalingFactor;
-		right *= driveScalingFactor;
-
-		sparkLeft1.set(left);
-		sparkLeft2.set(left);
-
-		sparkRight1.set(right);
-		sparkRight2.set(right);
+		this.left = left;
+		this.right = right;
 	}
 
 	public void arcadeDrive(double speed, double turn) {
@@ -52,15 +62,30 @@ public class Drivetrain {
 		}
 	}
 
+	public void update() {
+		left *= driveScalingFactor;
+		right *= driveScalingFactor;
+
+		sparkLeft1.set(left);
+		sparkLeft2.set(left);
+
+		sparkRight1.set(right);
+		sparkRight2.set(right);
+	}
+
 	public void resetGyro() {
+		messageBuffer.add(new Message("Reset drivetrain gyro.", Type.INFO));
 		gyro.reset();
 	}
 
 	public void calibrateGyro() {
+		messageBuffer.add(new Message("Calibrating drivetrain gyro.", Type.INFO));
 		gyro.calibrate();
 	}
 
 	public void reverseDriveDirection() {
+		messageBuffer.add(new Message("Reversed drivetrain gyro.", Type.INFO));
+		
 		sparkLeft1.setInverted(!sparkLeft1.getInverted());
 		sparkLeft2.setInverted(!sparkLeft2.getInverted());
 
@@ -78,9 +103,52 @@ public class Drivetrain {
 
 	public void nerfSpeed() {
 		if (driveScalingFactor == 1) {
+			messageBuffer.add(new Message("Nerfed drivetrain speed.", Type.INFO));
 			driveScalingFactor = .5;
 		} else if (driveScalingFactor == .5){
+			messageBuffer.add(new Message("Unnerfed drivetrain speed.", Type.INFO));
 			driveScalingFactor = 1;
 		}
+	}
+
+	@Override
+	public Set<String> getStateLogFields() {
+		Set<String> fields = new HashSet<>();
+
+		fields.add("left");
+		fields.add("right");
+		fields.add("driveScalingFactor");
+
+		fields.add("sparkLeft1PWM");
+		fields.add("sparkLeft2PWM");
+		fields.add("sparkRight1PWM");
+		fields.add("sparkRight2PWM");
+
+		fields.add("gyroHeading");
+
+		fields.add("encoderLeftTicks");
+		fields.add("encoderRightTicks");
+
+		return fields;
+	}
+
+	@Override
+	public Map<String, Object> logState() {
+		Map<String, Object> state = new HashMap<>();
+
+		state.put("left", left);
+		state.put("right", right);
+		state.put("driveScalingFactor", driveScalingFactor);
+
+		state.put("sparkLeft1PWM", sparkLeft1.get());
+		state.put("sparkLeft2PWM", sparkLeft2.get());
+		state.put("sparkRight1PWM", sparkRight1.get());
+		state.put("sparkRight2PWM", sparkRight2.get());
+
+		state.put("gyroHeading", gyro.getAngle());
+		state.put("encoderLeftTicks", encoderLeft.get());
+		state.put("encoderRightTicks", encoderRight.get());
+		
+		return state;
 	}
 }
