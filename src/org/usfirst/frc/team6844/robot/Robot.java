@@ -89,6 +89,9 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousPeriodic() {
 		super.autonomousPeriodic();
+		drivetrain.update();
+		arm.update();
+		intake.update();
 	}
 
 	@Override
