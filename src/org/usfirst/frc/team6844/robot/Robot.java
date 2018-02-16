@@ -47,7 +47,7 @@ public class Robot extends BorgRobot {
 		registerSubsystem("intake", intake);
 		registerSubsystem("arm", arm);
 
-		setPowerDistributionPanel(new PowerDistributionPanel());
+		//setPowerDistributionPanel(new PowerDistributionPanel());
 
 		// Set up logging warnings, information, etc. to text file.
 		try {
@@ -117,6 +117,8 @@ public class Robot extends BorgRobot {
 		if (gamepadDriver.getRawButtonPressed(gamepadDriver.A_BUTTON)) {
 			drivetrain.reverseDriveDirection();
 		}
+
+		drivetrain.update();
 	}
 
 	private void operateArm() {
