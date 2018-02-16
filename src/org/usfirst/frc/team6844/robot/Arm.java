@@ -34,10 +34,11 @@ public class Arm extends BorgSubsystem {
 	private final double TOP_HOLDING_OUTPUT = .2;
 	private final double MIDDLE_HOLDING_OUTPUT = .1;
 	private final double BOTTOM_HOLDING_OUTPUT = -.2;
-	
+
 	private boolean timedOut = false;
-	
+
 	public Arm() {
+		super();
 		bottomSwitch.invert();
 		topSwitch.invert();
 	}
@@ -51,9 +52,9 @@ public class Arm extends BorgSubsystem {
 	public void setTargetPosition(Position position) {
 		if (position != this.position) {
 			messageBuffer.add(new Message("Setting arm position to " + getNameForPosition(position), Type.INFO));
-			
+
 			counter = 0;
-			
+
 			this.previousPosition = this.position;
 			this.position = position;
 			this.timedOut = false;
@@ -113,29 +114,29 @@ public class Arm extends BorgSubsystem {
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
-		
+
 		fields.add("position");
 		fields.add("armMotorPercentOutput");
 		fields.add("topSwitch");
 		fields.add("bottomSwitch");
 		fields.add("counterValue");
-		
+
 		return fields;
 	}
 
 	@Override
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
-		
+
 		state.put("position", getNameForPosition(position));
 		state.put("armMotorPercentOutput", armMotor.getMotorOutputPercent());
 		state.put("topSwitch", topSwitch.get());
 		state.put("bottomSwitch", bottomSwitch.get());
 		state.put("counterValue", counter);
-		
+
 		return state;
 	}
-	
+
 	private String getNameForPosition(Position position) {
 		switch(position) {
 			case TOP:
@@ -145,7 +146,7 @@ public class Arm extends BorgSubsystem {
 			case BOTTOM:
 				return "bottom";
 		}
-		
+
 		return null;
 	}
 }

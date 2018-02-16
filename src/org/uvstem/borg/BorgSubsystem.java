@@ -13,6 +13,10 @@ public abstract class BorgSubsystem implements MessageLoggable, StateLoggable {
 	
 	public abstract void update();
 	
+	public BorgSubsystem() {
+		this.messageBuffer = new ArrayList<>();
+	}
+	
 	@Override
 	public List<Message> logMessages() {
 		return messageBuffer;

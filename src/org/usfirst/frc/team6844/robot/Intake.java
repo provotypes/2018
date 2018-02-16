@@ -27,6 +27,7 @@ public class Intake extends BorgSubsystem {
 	}
 
 	public Intake() {
+		super();
 		motorLeft.setInverted(true);
 	}
 
@@ -65,25 +66,25 @@ public class Intake extends BorgSubsystem {
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
-		
+
 		fields.add("state");
 		fields.add("motorLeftPercentOutput");
 		fields.add("motorRightPercentOutput");
-		
+
 		return fields;
 	}
 
 	@Override
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
-		
+
 		state.put("state", getNameForState(this.state));
 		state.put("motorLeftPercentOutput", motorLeft.getMotorOutputPercent());
 		state.put("motorRightPercentOutput", motorRight.getMotorOutputPercent());
-		
+
 		return state;
 	}
-	
+
 	private String getNameForState(State state) {
 		switch (state) {
 		case INTAKE:
@@ -95,7 +96,7 @@ public class Intake extends BorgSubsystem {
 		case STOP:
 			return "stop";
 		}
-		
+
 		return null;
 	}
 }
