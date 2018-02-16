@@ -25,6 +25,8 @@ public class Drivetrain extends BorgSubsystem {
 	private double left, right;
 
 	public Drivetrain() {
+		super();
+
 		sparkLeft1 = new Spark(0);
 		sparkLeft2 = new Spark(1);
 		sparkRight1 = new Spark(2);
@@ -34,7 +36,7 @@ public class Drivetrain extends BorgSubsystem {
 		sparkLeft2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
-		
+
 		encoderLeft = new Encoder(2, 3);
 		encoderRight = new Encoder(4, 5);
 	}
@@ -85,7 +87,7 @@ public class Drivetrain extends BorgSubsystem {
 
 	public void reverseDriveDirection() {
 		messageBuffer.add(new Message("Reversed drivetrain gyro.", Type.INFO));
-		
+
 		sparkLeft1.setInverted(!sparkLeft1.getInverted());
 		sparkLeft2.setInverted(!sparkLeft2.getInverted());
 
@@ -99,6 +101,14 @@ public class Drivetrain extends BorgSubsystem {
 
 	public double getScalingFactor() {
 		return driveScalingFactor;
+	}
+
+	public int getLeftEncoder() {
+		return encoderLeft.get();
+	}
+
+	public int getRightEncoder() {
+		return encoderRight.get();
 	}
 
 	public void nerfSpeed() {
@@ -148,7 +158,7 @@ public class Drivetrain extends BorgSubsystem {
 		state.put("gyroHeading", gyro.getAngle());
 		state.put("encoderLeftTicks", encoderLeft.get());
 		state.put("encoderRightTicks", encoderRight.get());
-		
+
 		return state;
 	}
 }
