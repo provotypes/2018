@@ -25,10 +25,10 @@ public class Arm extends BorgSubsystem {
 	private Position previousPosition = Position.BOTTOM;
 
 	private final int TICKS_UP = 60;
-	private final int TICKS_DOWN = 150 - TICKS_UP;
+	private final int TICKS_DOWN = 120 - TICKS_UP;
 	private final int TICKS_UP_DOWN = 3 * (TICKS_UP + TICKS_DOWN);
 
-	private final double TRAVEL_UP_OUTPUT = .6;
+	private final double TRAVEL_UP_OUTPUT = .8;
 	private final double TRAVEL_DOWN_OUTPUT = -.4;
 
 	private final double TOP_HOLDING_OUTPUT = .2;
