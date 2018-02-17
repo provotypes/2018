@@ -17,7 +17,7 @@ import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends BorgRobot {
 
@@ -28,6 +28,8 @@ public class Robot extends BorgRobot {
 	LogitechGamepadController gamepadDriver;
 	LogitechGamepadController gamepadOperator;
 
+	Compressor compressor;
+	
 	@Override
 	public void robotInit() {
 		super.robotInit();
@@ -43,15 +45,16 @@ public class Robot extends BorgRobot {
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
 
+		compressor = new Compressor();
+		compressor.start();
+
 		registerSubsystem("drivetrain", drivetrain);
 		registerSubsystem("intake", intake);
 		registerSubsystem("arm", arm);
 
-		//setPowerDistributionPanel(new PowerDistributionPanel());
-
 		// Set up logging warnings, information, etc. to text file.
 		try {
-			File textFile = new File("/logs/messages/" + initTime + ".txt");
+			File textFile = new File("/U/logs/messages/" + initTime + ".txt");
 			textFile.createNewFile();
 
 			setMessageLogger(new TextFileMessageLogger(textFile));
@@ -62,7 +65,7 @@ public class Robot extends BorgRobot {
 
 		// Set up logging robot state to a CSV file.
 		try {
-			File csvFile = new File("/logs/state/" + initTime + ".csv");
+			File csvFile = new File("/U/logs/state/" + initTime + ".csv");
 			csvFile.createNewFile();
 
 			setStateLogger(new CSVStateLogger(csvFile));
@@ -73,9 +76,9 @@ public class Robot extends BorgRobot {
 
 		// Initialize autonomous scripting system.
 		try {
-			initAutoScripts(new File("/key/pub.key"), new File("/scripts"));
+			initAutoScripts(new File("/U/keys/pub.key"), new File("/usb/autos"));
 		} catch (Exception e) {
-			System.err.println("Unable to initalize auto script!s");
+			System.err.println("Unable to initalize auto scripts!");
 			e.printStackTrace();
 		}
 	}

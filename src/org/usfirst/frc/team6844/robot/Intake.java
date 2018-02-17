@@ -12,10 +12,14 @@ import org.uvstem.borg.logging.Message.Type;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+
 public class Intake extends BorgSubsystem {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
+	private DoubleSolenoid extender = new DoubleSolenoid(0, 1);
 
 	private State state = State.STOP;
 
@@ -42,21 +46,25 @@ public class Intake extends BorgSubsystem {
 	public void update() {
 		switch(state) {
 			case INTAKE:
+				extender.set(Value.kForward);
 				motorLeft.set(ControlMode.PercentOutput, .5);
 				motorRight.set(ControlMode.PercentOutput, .6);
 				break;
 
 			case TURN:
+				extender.set(Value.kForward);
 				motorLeft.set(ControlMode.PercentOutput, .4);
 				motorRight.set(ControlMode.PercentOutput, -.4);
 				break;
 
 			case SHOOT:
+				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, -.4);
 				motorRight.set(ControlMode.PercentOutput, -.4);
 				break;
 
 			case STOP:
+				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, .1);
 				motorRight.set(ControlMode.PercentOutput, .1);
 				break;
@@ -70,6 +78,7 @@ public class Intake extends BorgSubsystem {
 		fields.add("state");
 		fields.add("motorLeftPercentOutput");
 		fields.add("motorRightPercentOutput");
+		fields.add("extenderValue");
 
 		return fields;
 	}
@@ -81,6 +90,7 @@ public class Intake extends BorgSubsystem {
 		state.put("state", getNameForState(this.state));
 		state.put("motorLeftPercentOutput", motorLeft.getMotorOutputPercent());
 		state.put("motorRightPercentOutput", motorRight.getMotorOutputPercent());
+		state.put("extenderValue", extender.get());
 
 		return state;
 	}

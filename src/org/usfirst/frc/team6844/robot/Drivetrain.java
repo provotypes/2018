@@ -20,8 +20,9 @@ public class Drivetrain extends BorgSubsystem {
 	ADXRS450_Gyro gyro;
 	Encoder encoderLeft, encoderRight;
 
+	public static final double TICKS_PER_INCH = 2048 / (6 * Math.PI);
+	public static final double DISTANCE_PER_PULSE = 1 / TICKS_PER_INCH;
 	private double driveScalingFactor = 1;
-
 	private double left, right;
 
 	public Drivetrain() {
@@ -39,6 +40,9 @@ public class Drivetrain extends BorgSubsystem {
 
 		encoderLeft = new Encoder(2, 3);
 		encoderRight = new Encoder(4, 5);
+		
+		encoderLeft.setDistancePerPulse(DISTANCE_PER_PULSE);
+		encoderRight.setDistancePerPulse(DISTANCE_PER_PULSE);
 	}
 
 	public void tankDrive(double left, double right) {
@@ -138,6 +142,8 @@ public class Drivetrain extends BorgSubsystem {
 
 		fields.add("encoderLeftTicks");
 		fields.add("encoderRightTicks");
+		fields.add("encoderLeftDistance");
+		fields.add("encoderRightDistance");
 
 		return fields;
 	}
@@ -158,6 +164,8 @@ public class Drivetrain extends BorgSubsystem {
 		state.put("gyroHeading", gyro.getAngle());
 		state.put("encoderLeftTicks", encoderLeft.get());
 		state.put("encoderRightTicks", encoderRight.get());
+		state.put("encoderLeftDistance", encoderLeft.getDistance());
+		state.put("encoderRightDistance", encoderRight.getDistance());
 
 		return state;
 	}
