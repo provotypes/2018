@@ -115,6 +115,11 @@ public class Drivetrain extends BorgSubsystem {
 		return encoderRight.get();
 	}
 
+	public void resetEncoders() {
+		encoderLeft.reset();
+		encoderRight.reset();
+	}
+
 	public void nerfSpeed() {
 		if (driveScalingFactor == 1) {
 			messageBuffer.add(new Message("Nerfed drivetrain speed.", Type.INFO));
