@@ -310,18 +310,16 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 * @throws SignatureException 
 	 * @throws InvalidKeyException 
 	 */
-	protected void initAutoScripts(File publicKey, File scriptDirectory) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
-		initPublicKey(publicKey);
+	protected void initAutoScripts(byte[] publicKeyBytes, File scriptDirectory) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
+		initPublicKey(publicKeyBytes);
 		initAutoScripts(scriptDirectory);
 	}
 	
 	/**
 	 * Initialize the public key for autonomous script signature verification.
 	 */
-	protected void initPublicKey(File publicKey) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-		byte[] keyFileBytes = Files.readAllBytes(publicKey.toPath());
-		
-		X509EncodedKeySpec spec = new X509EncodedKeySpec(keyFileBytes);
+	protected void initPublicKey(byte[] publicKeyBytes) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {	
+		X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		this.publicKey = kf.generatePublic(spec);
 	}

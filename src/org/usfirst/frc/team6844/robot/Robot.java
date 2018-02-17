@@ -11,6 +11,7 @@ import java.io.File;
 
 import org.usfirst.frc.team6844.robot.Arm.Position;
 import org.usfirst.frc.team6844.robot.Intake.State;
+import org.usfirst.frc.team6844.robot.auto.PublicKey;
 import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
@@ -29,7 +30,7 @@ public class Robot extends BorgRobot {
 	LogitechGamepadController gamepadOperator;
 
 	Compressor compressor;
-	
+
 	@Override
 	public void robotInit() {
 		super.robotInit();
@@ -76,7 +77,7 @@ public class Robot extends BorgRobot {
 
 		// Initialize autonomous scripting system.
 		try {
-			initAutoScripts(new File("/U/keys/pub.key"), new File("/usb/autos"));
+			initAutoScripts(PublicKey.keyBytes, new File("/usb/autos"));
 		} catch (Exception e) {
 			System.err.println("Unable to initalize auto scripts!");
 			e.printStackTrace();
