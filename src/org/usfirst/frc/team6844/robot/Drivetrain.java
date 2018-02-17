@@ -40,7 +40,7 @@ public class Drivetrain extends BorgSubsystem {
 
 		encoderLeft = new Encoder(2, 3);
 		encoderRight = new Encoder(4, 5);
-		
+
 		encoderLeft.setDistancePerPulse(DISTANCE_PER_PULSE);
 		encoderRight.setDistancePerPulse(DISTANCE_PER_PULSE);
 	}
