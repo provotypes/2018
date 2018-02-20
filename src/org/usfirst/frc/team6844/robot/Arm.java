@@ -26,6 +26,7 @@ public class Arm extends BorgSubsystem {
 
 	private final int TICKS_UP = 60;
 	private final int TICKS_DOWN = 120 - TICKS_UP;
+	private final int TICKS_BOTTOM_REBOUND = 10;
 	private final int TICKS_UP_DOWN = 3 * (TICKS_UP + TICKS_DOWN);
 
 	private final double TRAVEL_UP_OUTPUT = .8;
@@ -46,7 +47,8 @@ public class Arm extends BorgSubsystem {
 	enum Position {
 		TOP,
 		MIDDLE,
-		BOTTOM
+		BOTTOM,
+		BOTTOM_REBOUND
 	}
 
 	public void setTargetPosition(Position position) {
@@ -59,6 +61,18 @@ public class Arm extends BorgSubsystem {
 			this.position = position;
 			this.timedOut = false;
 		}
+	}
+
+	public void up() {
+		setTargetPosition(Position.TOP);
+	}
+
+	public void middle() {
+		setTargetPosition(Position.MIDDLE);
+	}
+
+	public void bottom() {
+		setTargetPosition(Position.BOTTOM);
 	}
 
 	@Override
@@ -104,6 +118,16 @@ public class Arm extends BorgSubsystem {
 						timedOut = true;
 						messageBuffer.add(new Message("Moving arm to bottom timed out.", Type.WARNING));
 					}
+					counter = 0;
+					position = Position.BOTTOM_REBOUND;
+				}
+
+				break;
+
+			case BOTTOM_REBOUND:
+				if (counter < TICKS_BOTTOM_REBOUND) {
+					armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
+				} else {
 					armMotor.set(ControlMode.PercentOutput, BOTTOM_HOLDING_OUTPUT);
 				}
 
@@ -145,6 +169,8 @@ public class Arm extends BorgSubsystem {
 				return "middle";
 			case BOTTOM:
 				return "bottom";
+			case BOTTOM_REBOUND:
+				return "rebound";
 		}
 
 		return null;
