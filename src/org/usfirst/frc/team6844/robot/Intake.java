@@ -42,25 +42,41 @@ public class Intake extends BorgSubsystem {
 		}
 	}
 
+	public void intake() {
+		setState(State.INTAKE);
+	}
+
+	public void turn() {
+		setState(State.TURN);
+	}
+
+	public void shoot() {
+		setState(State.SHOOT);
+	}
+
+	public void stop() {
+		setState(State.STOP);
+	}
+
 	@Override
 	public void update() {
 		switch(state) {
 			case INTAKE:
-				extender.set(Value.kForward);
+				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, .5);
 				motorRight.set(ControlMode.PercentOutput, .6);
 				break;
 
 			case TURN:
 				extender.set(Value.kForward);
-				motorLeft.set(ControlMode.PercentOutput, .4);
-				motorRight.set(ControlMode.PercentOutput, -.4);
+				motorLeft.set(ControlMode.PercentOutput, .5);
+				motorRight.set(ControlMode.PercentOutput, .9);
 				break;
 
 			case SHOOT:
 				extender.set(Value.kReverse);
-				motorLeft.set(ControlMode.PercentOutput, -.4);
-				motorRight.set(ControlMode.PercentOutput, -.4);
+				motorLeft.set(ControlMode.PercentOutput, -1);
+				motorRight.set(ControlMode.PercentOutput, -1);
 				break;
 
 			case STOP:
