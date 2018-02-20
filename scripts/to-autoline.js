@@ -1,12 +1,17 @@
-//Auto 1
+var DISTANCE_HIGH_SPEED = 40; //inches
 var DISTANCE_TO_AUTOLINE = 120; //inches
-var AUTO_SPEED = 0.2;
+var HIGH_SPEED = -.8;
+var LOW_SPEED = -.3;
 
-function init(){};
+function init() {
+	drivetrain.resetEncoders();
+};
 
-function periodic(){
-	if (drivetrain.encoder.getDistance() < DISTANCE_TO_AUTOLINE){
-		drivetrain.tankDrive(AUTO_SPEED, AUTO_SPEED);
+function periodic() {
+	if (drivetrain.getLeftEncoderDistance() < DISTANCE_HIGH_SPEED) {
+		drivetrain.tankDrive(HIGH_SPEED, HIGH_SPEED);
+	} else if (drivetrain.getLeftEncoderDistance() < DISTANCE_TO_AUTOLINE) {
+		drivetrain.tankDrive(LOW_SPEED, LOW_SPEED);
 	} else {
 		drivetrain.tankDrive(0, 0);
 	}
