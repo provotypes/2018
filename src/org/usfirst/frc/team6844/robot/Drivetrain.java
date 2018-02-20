@@ -22,6 +22,8 @@ public class Drivetrain extends BorgSubsystem {
 
 	public static final double TICKS_PER_INCH = 2048 / (6 * Math.PI);
 	public static final double DISTANCE_PER_PULSE = 1 / TICKS_PER_INCH;
+
+	private boolean reversed = false;
 	private double driveScalingFactor = 1;
 	private double left, right;
 
@@ -51,6 +53,10 @@ public class Drivetrain extends BorgSubsystem {
 	}
 
 	public void arcadeDrive(double speed, double turn) {
+		if (reversed) {
+			turn = - turn;
+		}
+
 		tankDrive(speed - turn, speed + turn);
 	}
 
@@ -89,8 +95,14 @@ public class Drivetrain extends BorgSubsystem {
 		gyro.calibrate();
 	}
 
+	public double getHeading() {
+		return gyro.getAngle();
+	}
+
 	public void reverseDriveDirection() {
-		messageBuffer.add(new Message("Reversed drivetrain gyro.", Type.INFO));
+		messageBuffer.add(new Message("Reversed drivetrain controls.", Type.INFO));
+
+		reversed = !reversed;
 
 		sparkLeft1.setInverted(!sparkLeft1.getInverted());
 		sparkLeft2.setInverted(!sparkLeft2.getInverted());
@@ -113,6 +125,14 @@ public class Drivetrain extends BorgSubsystem {
 
 	public int getRightEncoder() {
 		return encoderRight.get();
+	}
+
+	public double getLeftEncoderDistance() {
+		return encoderLeft.getDistance();
+	}
+
+	public double getRightEncoderDistance() {
+		return encoderRight.getDistance();
 	}
 
 	public void resetEncoders() {
