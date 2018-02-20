@@ -77,7 +77,7 @@ public class Robot extends BorgRobot {
 
 		// Initialize autonomous scripting system.
 		try {
-			initAutoScripts(PublicKey.keyBytes, new File("/usb/autos"));
+			initAutoScripts(PublicKey.keyBytes, new File("/U/autos"));
 		} catch (Exception e) {
 			System.err.println("Unable to initalize auto scripts!");
 			e.printStackTrace();
@@ -87,6 +87,14 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
+
+		try {
+			initAutoScripts(PublicKey.keyBytes, new File("/U/autos"));
+		} catch (Exception e) {
+			System.err.println("Unable to initalize auto scripts!");
+			e.printStackTrace();
+		}
+
 		drivetrain.resetGyro();
 		drivetrain.resetEncoders();
 	}
@@ -165,10 +173,20 @@ public class Robot extends BorgRobot {
 	@Override
 	public void testInit() {
 		super.testInit();
+
+		try {
+			initAutoScripts(PublicKey.keyBytes, new File("/U/autos"));
+		} catch (Exception e) {
+			System.err.println("Unable to initalize auto scripts!");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void testPeriodic() {
 		super.testPeriodic();
+		drivetrain.tankDrive(0, 0);
+		intake.stop();
+		arm.bottom();
 	}
 }
