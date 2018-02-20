@@ -44,35 +44,36 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This class extends the WPILib TimedRobot class to provide several features, such
  * as logging, Nashorn-based autonomous scripting, and the cryptographic verification
  * of those autonomous scripts.
- * 
+ *
  * Note that your extension of this class must call super for the robotInit(),
- * autoInit(), autoPeriodic(), teleopInit(), and teleopPeriodic() methods if 
+ * autoInit(), autoPeriodic(), teleopInit(), and teleopPeriodic() methods if
  * overridden.
  */
 public class BorgRobot extends TimedRobot implements StateLoggable, MessageLoggable {
 	private Map<String, BorgSubsystem> subsystems = new HashMap<>();
-	
+
 	private PowerDistributionPanel powerDistributionPanel;
-	
+
 	private BuiltInAccelerometer accelerometer;
 
 	//Set to ridiculously high values as defaults; won't record collisions.
 	private double collisionAccelThreshold = 100;
 	private double collisionJerkThreshold = 100;
-	
+
 	private double lastX;
 	private double lastY;
 	private double lastZ;
 
 	protected MessageLogger messageLogger;
 	protected StateLogger stateLogger;
-	
+
 	private List<Message> messageBuffer = new ArrayList<>();
 	private Map<String, Object> stateBuffer = new HashMap<>();
-	
+
 	protected PublicKey publicKey;
 	protected SendableChooser<Invocable> autoModes = new SendableChooser<>();
-	
+	protected String gameData;
+
 	/**
 	 * Log an init message.  You *must* call initAutoScripts() yourself with the correct
 	 * folder path.
@@ -80,15 +81,16 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	@Override
 	public void robotInit() {
 		messageBuffer.add(new Message("Robot initalizing.", Type.INFO));
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
-	
+
 	/**
 	 * Log an init message and run init() from the selected autonomous script.
 	 */
 	@Override
 	public void autonomousInit() {
 		messageBuffer.add(new Message("Autonomous initalizing.", Type.INFO));
-		
+
 		Invocable i = autoModes.getSelected();
 		try {
 			i.invokeFunction("init");
@@ -100,26 +102,29 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 			messageBuffer.add(new Message("Auto script errored during execution of init().", Type.SEVERE));
 		}
 	}
-	
+
 	/**
 	 * Log robot state and run periodic() from the selected autonomous script.
 	 */
 	@Override
 	public void autonomousPeriodic() {
 		periodic();
-		
+
 		Invocable i = autoModes.getSelected();
 		try {
 			i.invokeFunction("periodic");
 		} catch (NullPointerException e) {
 			messageBuffer.add(new Message("No auto script selected!", Type.SEVERE));
+			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
 			messageBuffer.add(new Message("This auto script must have a periodic() function!", Type.SEVERE));
+			e.printStackTrace();
 		} catch (ScriptException e) {
 			messageBuffer.add(new Message("Auto script errored during execution of periodic().", Type.SEVERE));
+			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Log an init message.
 	 */
@@ -127,7 +132,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void teleopInit() {
 		messageBuffer.add(new Message("Telop initalizing.", Type.INFO));
 	}
-	
+
 	/**
 	 * Log robot state.
 	 */
@@ -135,7 +140,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void teleopPeriodic() {
 		periodic();
 	}
-	
+
 	/**
 	 * Log an init message.
 	 */
@@ -143,7 +148,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void testInit() {
 		messageBuffer.add(new Message("Test initalizing.", Type.INFO));
 	}
-	
+
 	/**
 	 * Log robot state.
 	 */
@@ -151,17 +156,17 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void testPeriodic() {
 		periodic();
 	}
-	
+
 	@Override
 	public void disabledInit() {
 		messageBuffer.add(new Message("Disabled initalizing.", Type.INFO));
 	}
-	
+
 	@Override
 	public void disabledPeriodic() {
 		periodic();
 	}
-	
+
 	/**
 	 * Method that is called each time autonomousPeriodic(), teleopPeriodic(), and
 	 * testPeriodic() is called.
@@ -172,12 +177,12 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 				Math.pow(accelerometer.getX(), 2) +
 				Math.pow(accelerometer.getY(), 2) +
 				Math.pow(accelerometer.getZ(), 2));
-			
+
 			double jerk = Math.sqrt(
 				Math.pow(accelerometer.getX() - lastX, 2) +
 				Math.pow(accelerometer.getY() - lastY, 2) +
 				Math.pow(accelerometer.getZ() - lastZ, 2));
-			
+
 
 			if (accel > collisionAccelThreshold) {
 				messageBuffer.add(new Message("Collision: acceleration exceeds threshold!", Type.SEVERE));
@@ -185,7 +190,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 
 			if (jerk > collisionJerkThreshold) {
 				messageBuffer.add(new Message("Collision: jerk exceeds threshold!", Type.SEVERE));
-			}	
+			}
 
 			lastX = accelerometer.getX();
 			lastY = accelerometer.getY();
@@ -193,8 +198,9 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		}
 
 		log();
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
 	}
-	
+
 	/**
 	 * Log everything that's been registered.  Clean up buffers.
 	 */
@@ -202,12 +208,12 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		if (messageLogger != null) {
 			messageLogger.log();
 		}
-		
+
 		if (stateLogger != null) {
 			stateLogger.log();
 		}
 	}
-	
+
 	/**
 	 * Implement the MessageLoggable interface.
 	 */
@@ -215,7 +221,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public List<Message> logMessages() {
 		return messageBuffer;
 	}
-	
+
 	/**
 	 * Clear the internal buffer of messages to log.
 	 */
@@ -223,7 +229,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	public void afterLogMessages() {
 		if (messageBuffer != null) {
 			messageBuffer.clear();
-		}		
+		}
 	}
 
 	/**
@@ -232,7 +238,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
-		
+
 		fields.add("voltage");
 		fields.add("current");
 		fields.add("brownout");
@@ -240,7 +246,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		fields.add("fms");
 		fields.add("enabled");
 		fields.add("game_message");
-		
+
 		return fields;
 	}
 
@@ -255,16 +261,16 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		} else {
 			stateBuffer.put("current", null);
 		}
-		
+
 		stateBuffer.put("brownout", RobotController.isBrownedOut());
 		stateBuffer.put("attached", DriverStation.getInstance().isDSAttached());
 		stateBuffer.put("fms", DriverStation.getInstance().isFMSAttached());
 		stateBuffer.put("enabled", DriverStation.getInstance().isEnabled());
 		stateBuffer.put("game_message", DriverStation.getInstance().getGameSpecificMessage());
-		
+
 		return stateBuffer;
 	}
-	
+
 	/**
 	 * Register the subsystem with the robot.  This enables the robot to automatically
 	 * log the subsystem and use the expose subsystem for use in autonomous scripts.
@@ -274,7 +280,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	protected final void registerSubsystem(String name, BorgSubsystem subsystem) {
 		subsystems.put(name, subsystem);
 	}
-	
+
 	/**
 	 * Set the MessageLogger to use for the robot.
 	 * @param messageLogger the MessageLogger to use.
@@ -283,7 +289,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		this.messageLogger = messageLogger;
 		this.messageLogger.register("Robot", this);
 	}
-	
+
 	/**
 	 * Set the StateLogger to use for the robot.
 	 * @param stateLogger the StateLogger to use.
@@ -292,7 +298,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		this.stateLogger = stateLogger;
 		this.stateLogger.register("Robot", this);
 	}
-	
+
 	/**
 	 * Set the PowerDistributionPanel to use for logging purposes.  Must be called
 	 * as part of robotInit().
@@ -301,74 +307,75 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	protected final void setPowerDistributionPanel(PowerDistributionPanel powerDistributionPanel) {
 		this.powerDistributionPanel = powerDistributionPanel;
 	}
-	
+
 	/**
 	 * Initialize the public key for autonomous scripts and load them for use via the SmartDashboard.
-	 * @throws IOException 
-	 * @throws InvalidKeySpecException 
-	 * @throws NoSuchAlgorithmException 
-	 * @throws SignatureException 
-	 * @throws InvalidKeyException 
+	 * @throws IOException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
+	 * @throws SignatureException
+	 * @throws InvalidKeyException
 	 */
 	protected void initAutoScripts(byte[] publicKeyBytes, File scriptDirectory) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, InvalidKeyException, SignatureException {
+		messageBuffer.add(new Message("Initalizing autonomous scripts.", Type.INFO));
 		initPublicKey(publicKeyBytes);
 		initAutoScripts(scriptDirectory);
 	}
-	
+
 	/**
 	 * Initialize the public key for autonomous script signature verification.
 	 */
-	protected void initPublicKey(byte[] publicKeyBytes) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {	
+	protected void initPublicKey(byte[] publicKeyBytes) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyBytes);
 		KeyFactory kf = KeyFactory.getInstance("RSA");
 		this.publicKey = kf.generatePublic(spec);
 	}
-	
+
 	/**
 	 * Identify and verify potential scripts to use.
 	 * @param scriptDirectory The folder that contains the .sig and .js files.
-	 * @throws NoSuchAlgorithmException 
-	 * @throws InvalidKeyException 
-	 * @throws IOException 
-	 * @throws SignatureException 
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeyException
+	 * @throws IOException
+	 * @throws SignatureException
 	 */
 	protected void initAutoScripts(File scriptDirectory) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
 		Set<File> signatures = new HashSet<>(Arrays.asList(scriptDirectory.listFiles((File dir, String name) -> {
 			if (name.contains(".sig")) {
 				return true;
 			}
-			
+
 			return false;
 		})));
-		
+
 		messageBuffer.add(new Message("Found the following signatures: " + signatures, Type.DEBUG));
-		
+
 		//Verify scripts
 		Signature publicSignature = Signature.getInstance("SHA256withRSA");
 		publicSignature.initVerify(this.publicKey);
-		
+
 		ScriptEngineManager manager = new ScriptEngineManager();
-		
+
 		for (File sig : signatures) {
 			String scriptName = sig.getName().replaceFirst("\\.sig", "\\.js");
-			
+
 			File[] scriptMatches = scriptDirectory.listFiles((File dir, String name) -> {
 				if (name.equals(scriptName)) {
 					return true;
 				}
-				
+
 				return false;
 			});
-			
+
 			messageBuffer.add(new Message("While looking at signature " + sig + ", found the following scripts: " + scriptMatches, Type.DEBUG));
-			
+
 			if (scriptMatches.length < 1) {
 				messageBuffer.add(new Message("Couldn't find auto script " + scriptName + ".", Type.WARNING));
 			} else if (scriptMatches.length > 1) {
 				messageBuffer.add(new Message("Multiple files named " + scriptName + " found for auton script.", Type.SEVERE));
 			} else {
 				publicSignature.update(Files.readAllBytes(scriptMatches[0].toPath()));
-				
+
 				if (publicSignature.verify(Files.readAllBytes(sig.toPath()))) {
 					ScriptEngine engine = manager.getEngineByName("nashorn");
 					try {
@@ -384,7 +391,7 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 				}
 			}
 		}
-		
+
 		SmartDashboard.putData("Autonomous modes", autoModes);
 		messageBuffer.add(new Message("Added the auto modes chooser, " + autoModes + " to the SmartDashboard.", Type.DEBUG));
 	}
@@ -413,8 +420,8 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 	 * @param engine
 	 */
 	private void setUpScriptContext(ScriptEngine engine) {
-		engine.put("gameData", DriverStation.getInstance().getGameSpecificMessage());
-	
+		engine.put("gameData", gameData);
+
 		for (String subsystem : subsystems.keySet()) {
 			engine.put(subsystem, subsystems.get(subsystem));
 		}
