@@ -10,6 +10,7 @@ package org.usfirst.frc.team6844.robot;
 import java.io.File;
 
 import org.usfirst.frc.team6844.robot.Arm.Position;
+import org.usfirst.frc.team6844.robot.Intake.ArmState;
 import org.usfirst.frc.team6844.robot.Intake.State;
 import org.usfirst.frc.team6844.robot.auto.PublicKey;
 import org.uvstem.borg.BorgRobot;
@@ -157,8 +158,10 @@ public class Robot extends BorgRobot {
 
 	private void operateIntake() {
 		// Bind intake state to operator buttons
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_STICK_IN)) {
-			intake.setState(State.TURN);
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_BUMPER)) {
+			intake.setLeftArm(ArmState.EXTENDED);
+		} else if (gamepadOperator.getRawButtonPressed(gamepadOperator.RIGHT_BUMPER)){
+			intake.setRightArm(ArmState.EXTENDED);
 		} else if (Math.abs(gamepadOperator.getLeftX()) > .5) {
 			intake.setState(State.STOP);
 		} else if (gamepadOperator.getLeftY() < -.5) {
