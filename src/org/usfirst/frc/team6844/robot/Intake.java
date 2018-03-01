@@ -19,7 +19,8 @@ public class Intake extends BorgSubsystem {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
-	private DoubleSolenoid extender = new DoubleSolenoid(0, 1);
+	private DoubleSolenoid extenderRight = new DoubleSolenoid(4, 5);
+	private DoubleSolenoid extenderLeft = new DoubleSolenoid(0, 1);
 
 	private State state = State.STOP;
 
@@ -62,25 +63,21 @@ public class Intake extends BorgSubsystem {
 	public void update() {
 		switch(state) {
 			case INTAKE:
-				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, .5);
 				motorRight.set(ControlMode.PercentOutput, .6);
 				break;
 
 			case TURN:
-				extender.set(Value.kForward);
 				motorLeft.set(ControlMode.PercentOutput, .5);
 				motorRight.set(ControlMode.PercentOutput, .9);
 				break;
 
 			case SHOOT:
-				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, -1);
 				motorRight.set(ControlMode.PercentOutput, -1);
 				break;
 
 			case STOP:
-				extender.set(Value.kReverse);
 				motorLeft.set(ControlMode.PercentOutput, .1);
 				motorRight.set(ControlMode.PercentOutput, .1);
 				break;
@@ -106,7 +103,7 @@ public class Intake extends BorgSubsystem {
 		state.put("state", getNameForState(this.state));
 		state.put("motorLeftPercentOutput", motorLeft.getMotorOutputPercent());
 		state.put("motorRightPercentOutput", motorRight.getMotorOutputPercent());
-		state.put("extenderValue", extender.get());
+		state.put("extenderValue", extenderRight.get());
 
 		return state;
 	}
@@ -124,5 +121,21 @@ public class Intake extends BorgSubsystem {
 		}
 
 		return null;
+	}
+	
+	public void switchLeftExtender() {
+		if (extenderLeft.get() == Value.kForward) {
+			extenderLeft.set(Value.kReverse);
+		} else {
+			extenderLeft.set(Value.kForward);
+		}
+	}
+	
+	public void switchRightExtender() {
+		if (extenderRight.get() == Value.kForward) {
+			extenderRight.set(Value.kReverse);
+		} else {
+			extenderRight.set(Value.kForward);
+		}
 	}
 }

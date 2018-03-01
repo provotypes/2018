@@ -166,6 +166,14 @@ public class Robot extends BorgRobot {
 		} else if (gamepadOperator.getLeftY() > .5) {
 			intake.setState(State.INTAKE);
 		}
+		
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_BUMPER)) {
+			intake.switchLeftExtender();
+		}
+		
+		if (gamepadOperator.getRawButtonPressed(gamepadOperator.RIGHT_BUMPER)) {
+			intake.switchRightExtender();
+		}
 
 		intake.update();
 	}
