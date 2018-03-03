@@ -19,8 +19,8 @@ public class Intake extends BorgSubsystem {
 
 	private TalonSRX motorLeft = new TalonSRX(4);
 	private TalonSRX motorRight = new TalonSRX(6);
-	private DoubleSolenoid extenderRight = new DoubleSolenoid(4, 5);
-	private DoubleSolenoid extenderLeft = new DoubleSolenoid(0, 1);
+	public DoubleSolenoid extenderRight = new DoubleSolenoid(6, 7);
+	public DoubleSolenoid extenderLeft = new DoubleSolenoid(0, 1);
 
 	private State state = State.STOP;
 
@@ -63,8 +63,8 @@ public class Intake extends BorgSubsystem {
 	public void update() {
 		switch(state) {
 			case INTAKE:
-				motorLeft.set(ControlMode.PercentOutput, .5);
-				motorRight.set(ControlMode.PercentOutput, .6);
+				motorLeft.set(ControlMode.PercentOutput, .6);
+				motorRight.set(ControlMode.PercentOutput, .4);
 				break;
 
 			case TURN:

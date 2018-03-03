@@ -9,8 +9,6 @@ package org.usfirst.frc.team6844.robot;
 
 import java.io.File;
 
-import org.usfirst.frc.team6844.robot.Arm.Position;
-import org.usfirst.frc.team6844.robot.Intake.State;
 import org.usfirst.frc.team6844.robot.auto.PublicKey;
 import org.uvstem.borg.BorgRobot;
 import org.uvstem.borg.joysticks.LogitechGamepadController;
@@ -18,18 +16,14 @@ import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
 import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.Compressor;
 
 public class Robot extends BorgRobot {
 
 	Drivetrain drivetrain;
-	Intake intake;
 	Arm arm;
 
 	LogitechGamepadController gamepadDriver;
 	LogitechGamepadController gamepadOperator;
-
-	Compressor compressor;
 
 	@Override
 	public void robotInit() {
@@ -40,18 +34,12 @@ public class Robot extends BorgRobot {
 		CameraServer.getInstance().startAutomaticCapture();
 
 		drivetrain = new Drivetrain();
-		intake = new Intake();
 		arm = new Arm();
 
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
 
-		compressor = new Compressor();
-		compressor.start();
-
 		registerSubsystem("drivetrain", drivetrain);
-		registerSubsystem("intake", intake);
-		registerSubsystem("arm", arm);
 
 		// Set up logging warnings, information, etc. to text file.
 		try {
@@ -104,7 +92,6 @@ public class Robot extends BorgRobot {
 		super.autonomousPeriodic();
 		drivetrain.update();
 		arm.update();
-		intake.update();
 	}
 
 	@Override
@@ -118,7 +105,9 @@ public class Robot extends BorgRobot {
 
 		operateDrivetrain();
 		operateArm();
-		operateIntake();
+		
+		System.out.println("Left encoder: " + drivetrain.encoderLeft.get());
+		System.out.println("Right encoder: " + drivetrain.encoderRight.get());
 	}
 
 	private void operateDrivetrain() {
@@ -138,44 +127,8 @@ public class Robot extends BorgRobot {
 	}
 
 	private void operateArm() {
-		// Operator Y button, sets position of switch to top
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.Y_BUTTON)) {
-			arm.setTargetPosition(Position.TOP);
-		}
-		// Operator X/B button, sets position of switch to middle
-		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.X_BUTTON) ||
-				gamepadOperator.getRawButtonPressed(gamepadOperator.B_BUTTON)) {
-			arm.setTargetPosition(Position.MIDDLE);
-		}
-		// Operator A button, sets position of switch to bottom
-		else if (gamepadOperator.getRawButtonPressed(gamepadOperator.A_BUTTON)) {
-			arm.setTargetPosition(Position.BOTTOM);
-		}
-
+		arm.set(gamepadOperator.getRightY());
 		arm.update();
-	}
-
-	private void operateIntake() {
-		// Bind intake state to operator buttons
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_STICK_IN)) {
-			intake.setState(State.TURN);
-		} else if (Math.abs(gamepadOperator.getLeftX()) > .5) {
-			intake.setState(State.STOP);
-		} else if (gamepadOperator.getLeftY() < -.5) {
-			intake.setState(State.SHOOT);
-		} else if (gamepadOperator.getLeftY() > .5) {
-			intake.setState(State.INTAKE);
-		}
-		
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.LEFT_BUMPER)) {
-			intake.switchLeftExtender();
-		}
-		
-		if (gamepadOperator.getRawButtonPressed(gamepadOperator.RIGHT_BUMPER)) {
-			intake.switchRightExtender();
-		}
-
-		intake.update();
 	}
 
 	@Override
@@ -193,8 +146,5 @@ public class Robot extends BorgRobot {
 	@Override
 	public void testPeriodic() {
 		super.testPeriodic();
-		drivetrain.tankDrive(0, 0);
-		intake.stop();
-		arm.bottom();
 	}
 }
