@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Intake extends BorgSubsystem {
 
-	private DoubleSolenoid extenderRight = new DoubleSolenoid(4, 5);
+	private DoubleSolenoid extenderRight = new DoubleSolenoid(6, 7);
 	private DoubleSolenoid extenderLeft = new DoubleSolenoid(0, 1);
 
 	//private State state = State.STOP;
