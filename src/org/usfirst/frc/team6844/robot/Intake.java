@@ -17,33 +17,31 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Intake extends BorgSubsystem {
 
-	private TalonSRX motorLeft = new TalonSRX(4);
-	private TalonSRX motorRight = new TalonSRX(6);
 	private DoubleSolenoid extenderRight = new DoubleSolenoid(4, 5);
 	private DoubleSolenoid extenderLeft = new DoubleSolenoid(0, 1);
 
-	private State state = State.STOP;
+	//private State state = State.STOP;
 
-	public enum State {
+	/*public enum State {
 		INTAKE,
 		TURN,
 		SHOOT,
 		STOP
-	}
+	}*/
 
 	public Intake() {
 		super();
-		motorLeft.setInverted(true);
+		//motorLeft.setInverted(true);
 	}
 
-	public void setState(State state) {
+	/*public void setState(State state) {
 		if (this.state != state) {
 			messageBuffer.add(new Message("Setting intake state to " + getNameForState(state), Type.INFO));
 			this.state = state;
 		}
-	}
+	}*/
 
-	public void intake() {
+	/*public void intake() {
 		setState(State.INTAKE);
 	}
 
@@ -57,11 +55,11 @@ public class Intake extends BorgSubsystem {
 
 	public void stop() {
 		setState(State.STOP);
-	}
+	}*/
 
 	@Override
 	public void update() {
-		switch(state) {
+		/*switch(state) {
 			case INTAKE:
 				motorLeft.set(ControlMode.PercentOutput, .5);
 				motorRight.set(ControlMode.PercentOutput, .6);
@@ -81,16 +79,18 @@ public class Intake extends BorgSubsystem {
 				motorLeft.set(ControlMode.PercentOutput, .1);
 				motorRight.set(ControlMode.PercentOutput, .1);
 				break;
-		}
+		}*/
+		
+		
 	}
 
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
 
-		fields.add("state");
-		fields.add("motorLeftPercentOutput");
-		fields.add("motorRightPercentOutput");
+		//fields.add("state");
+		//fields.add("motorLeftPercentOutput");
+		//fields.add("motorRightPercentOutput");
 		fields.add("extenderValue");
 
 		return fields;
@@ -100,15 +100,15 @@ public class Intake extends BorgSubsystem {
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
 
-		state.put("state", getNameForState(this.state));
-		state.put("motorLeftPercentOutput", motorLeft.getMotorOutputPercent());
-		state.put("motorRightPercentOutput", motorRight.getMotorOutputPercent());
+		//state.put("state", getNameForState(this.state));
+		//state.put("motorLeftPercentOutput", motorLeft.getMotorOutputPercent());
+		//state.put("motorRightPercentOutput", motorRight.getMotorOutputPercent());
 		state.put("extenderValue", extenderRight.get());
 
 		return state;
 	}
 
-	private String getNameForState(State state) {
+	/*private String getNameForState(State state) {
 		switch (state) {
 		case INTAKE:
 			return "intake";
@@ -121,7 +121,7 @@ public class Intake extends BorgSubsystem {
 		}
 
 		return null;
-	}
+	}*/
 	
 	public void switchLeftExtender() {
 		if (extenderLeft.get() == Value.kForward) {

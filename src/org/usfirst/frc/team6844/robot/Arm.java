@@ -21,8 +21,8 @@ public class Arm extends BorgSubsystem {
 
 	private int counter = 0;
 
-	private Position position = Position.BOTTOM;
-	private Position previousPosition = Position.BOTTOM;
+	//private Position position = Position.BOTTOM;
+	//private Position previousPosition = Position.BOTTOM;
 
 	private final int TICKS_UP = 60;
 	private final int TICKS_DOWN = 120 - TICKS_UP;
@@ -44,7 +44,7 @@ public class Arm extends BorgSubsystem {
 		topSwitch.invert();
 	}
 
-	enum Position {
+	/*enum Position {
 		TOP,
 		MIDDLE,
 		BOTTOM,
@@ -73,13 +73,13 @@ public class Arm extends BorgSubsystem {
 
 	public void bottom() {
 		setTargetPosition(Position.BOTTOM);
-	}
+	}*/
 
 	@Override
 	public void update() {
 		counter++; //At 50Hz, the counter will overflow in about 1.3 years.
 
-		switch (position) {
+		/*switch (position) {
 			case TOP:
 				if (!topSwitch.get() && counter < TICKS_UP_DOWN) {
 					armMotor.set(ControlMode.PercentOutput, TRAVEL_UP_OUTPUT);
@@ -132,7 +132,7 @@ public class Arm extends BorgSubsystem {
 				}
 
 				break;
-		}
+		}*/
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class Arm extends BorgSubsystem {
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
 
-		state.put("position", getNameForPosition(position));
+		//state.put("position", getNameForPosition(position));
 		state.put("armMotorPercentOutput", armMotor.getMotorOutputPercent());
 		state.put("topSwitch", topSwitch.get());
 		state.put("bottomSwitch", bottomSwitch.get());
@@ -161,7 +161,7 @@ public class Arm extends BorgSubsystem {
 		return state;
 	}
 
-	private String getNameForPosition(Position position) {
+	/*private String getNameForPosition(Position position) {
 		switch(position) {
 			case TOP:
 				return "top";
@@ -174,5 +174,5 @@ public class Arm extends BorgSubsystem {
 		}
 
 		return null;
-	}
+	}*/
 }
