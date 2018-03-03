@@ -152,7 +152,7 @@ public class Robot extends BorgRobot {
 			arm.setTargetPosition(Position.BOTTOM);
 		}*/
 
-		arm.update(); /* UPDATE THIS ******************************************************************************/
+		arm.set(gamepadOperator.getRawAxis(gamepadOperator.RIGHT_Y_AXIS));
 	}
 
 	private void operateIntake() {

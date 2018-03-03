@@ -37,6 +37,8 @@ public class Arm extends BorgSubsystem {
 	private final double BOTTOM_HOLDING_OUTPUT = -.2;
 
 	private boolean timedOut = false;
+	private double motorSpeed = 0;
+
 
 	public Arm() {
 		super();
@@ -77,8 +79,10 @@ public class Arm extends BorgSubsystem {
 
 	@Override
 	public void update() {
-		counter++; //At 50Hz, the counter will overflow in about 1.3 years.
-
+		//counter++; //At 50Hz, the counter will overflow in about 1.3 years.
+		
+		armMotor.set(ControlMode.PercentOutput, motorSpeed);
+		
 		/*switch (position) {
 			case TOP:
 				if (!topSwitch.get() && counter < TICKS_UP_DOWN) {
@@ -133,6 +137,10 @@ public class Arm extends BorgSubsystem {
 
 				break;
 		}*/
+	}
+	
+	public void set(double speed) {
+		motorSpeed = speed;
 	}
 
 	@Override
