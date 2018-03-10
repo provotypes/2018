@@ -1,24 +1,22 @@
-var DISTANCE_HIGH_SPEED = 40; //inches
-var DISTANCE_TO_AUTOLINE = 120; //inches
-var HIGH_SPEED = -.8;
-var LOW_SPEED = -.3;
+var DISTANCE_HIGH_SPEED = -40; //inches
+var DISTANCE_TO_AUTOLINE = -120; //inches
+var HIGH_SPEED = .8;
+var LOW_SPEED = .3;
 
 function init() {
 	drivetrain.resetEncoders();
 };
 
 function periodic() {
-	arm.middle();
-
-	if (drivetrain.getLeftEncoderDistance() < DISTANCE_HIGH_SPEED) {
+	if (drivetrain.getLeftEncoderDistance() > DISTANCE_HIGH_SPEED) {
 		drivetrain.tankDrive(HIGH_SPEED, HIGH_SPEED);
-	} else if (drivetrain.getLeftEncoderDistance() < DISTANCE_TO_AUTOLINE) {
+	} else if (drivetrain.getLeftEncoderDistance() > DISTANCE_TO_AUTOLINE) {
 		drivetrain.tankDrive(LOW_SPEED, LOW_SPEED);
 	} else {
-		drivetrain.tankDrive(0, 0);
+		drivetrain.tankDrive(.25, .25);
 
 		if (gameData.length == 3 && gameData.charAt(0) == 'R'){
-			intake.shoot();
+			arm.set(-1);
 		}
 	}
 }
