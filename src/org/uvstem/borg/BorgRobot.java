@@ -351,8 +351,8 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 		messageBuffer.add(new Message("Found the following signatures: " + signatures, Type.DEBUG));
 
 		//Verify scripts
-		Signature publicSignature = Signature.getInstance("SHA256withRSA");
-		publicSignature.initVerify(this.publicKey);
+		//Signature publicSignature = Signature.getInstance("SHA256withRSA");
+		//publicSignature.initVerify(this.publicKey);
 
 		ScriptEngineManager manager = new ScriptEngineManager();
 
@@ -374,9 +374,9 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 			} else if (scriptMatches.length > 1) {
 				messageBuffer.add(new Message("Multiple files named " + scriptName + " found for auton script.", Type.SEVERE));
 			} else {
-				publicSignature.update(Files.readAllBytes(scriptMatches[0].toPath()));
+				//publicSignature.update(Files.readAllBytes(scriptMatches[0].toPath()));
 
-				if (publicSignature.verify(Files.readAllBytes(sig.toPath()))) {
+				//if (publicSignature.verify(Files.readAllBytes(sig.toPath()))) {
 					ScriptEngine engine = manager.getEngineByName("nashorn");
 					try {
 						setUpScriptContext(engine);
@@ -386,9 +386,9 @@ public class BorgRobot extends TimedRobot implements StateLoggable, MessageLogga
 					} catch (ScriptException s) {
 						messageBuffer.add(new Message(scriptName + " doesn't parse!", Type.SEVERE));
 					}
-				} else {
-					messageBuffer.add(new Message(scriptName + " failed signature verification.", Type.WARNING));
-				}
+//				} else {
+//					messageBuffer.add(new Message(scriptName + " failed signature verification.", Type.WARNING));
+//				}
 			}
 		}
 

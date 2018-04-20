@@ -87,9 +87,22 @@ public class Robot extends BorgRobot {
 		drivetrain.resetEncoders();
 	}
 
+	int counter = 0;
+	
 	@Override
 	public void autonomousPeriodic() {
-		super.autonomousPeriodic();
+		//super.autonomousPeriodic();
+		
+		if (counter < 50) {
+			drivetrain.tankDrive(.8, .8);
+		} else if (counter < 200) {
+			drivetrain.tankDrive(.3, .3);
+		} else {
+			drivetrain.tankDrive(0, 0);
+			System.out.println(drivetrain.encoderLeft.getDistance());
+		}
+		counter += 1;
+		
 		drivetrain.update();
 		arm.update();
 	}
@@ -111,7 +124,7 @@ public class Robot extends BorgRobot {
 	}
 
 	private void operateDrivetrain() {
-		drivetrain.arcadeDrive(gamepadDriver.getLeftY(), gamepadDriver.getRightX());
+		drivetrain.arcadeDrive(gamepadDriver.getLeftY() * .7, gamepadDriver.getRightX() * .7);
 
 		//Driver start button, nerfs the speed
 		if (gamepadDriver.getRawButtonPressed(gamepadDriver.START_BUTTON)) {
