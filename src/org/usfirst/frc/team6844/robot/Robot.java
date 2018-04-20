@@ -94,11 +94,13 @@ public class Robot extends BorgRobot {
 		
 		if (counter < 50) {
 			drivetrain.tankDrive(.8, .8);
-		} else if (counter < 175) {
+		} else if (counter < 150) {
+			drivetrain.tankDrive(.3, .4);
+		} else if (counter < 200){
+			drivetrain.tankDrive(.5, -.5);
+		} else if (counter < 300){
 			drivetrain.tankDrive(.3, .3);
-		} else if (counter < 225){
-			drivetrain.tankDrive(.5, 0);
-		} else if (counter < 275){
+		} else if (counter < 400){
 			drivetrain.tankDrive(0, 0);
 			arm.set(1);
 		} else {
