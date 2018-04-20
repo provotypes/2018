@@ -91,15 +91,19 @@ public class Robot extends BorgRobot {
 	
 	@Override
 	public void autonomousPeriodic() {
-		//super.autonomousPeriodic();
 		
 		if (counter < 50) {
 			drivetrain.tankDrive(.8, .8);
-		} else if (counter < 200) {
+		} else if (counter < 175) {
 			drivetrain.tankDrive(.3, .3);
-		} else {
+		} else if (counter < 225){
+			drivetrain.tankDrive(.5, 0);
+		} else if (counter < 275){
 			drivetrain.tankDrive(0, 0);
-			System.out.println(drivetrain.encoderLeft.getDistance());
+			arm.set(1);
+		} else {
+			arm.set(0.0);
+			drivetrain.tankDrive(0, 0);
 		}
 		counter += 1;
 		
