@@ -92,25 +92,9 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousPeriodic() {
 		
-		if (counter < 50) {
-			drivetrain.tankDrive(.8, .8);
-		} else if (counter < 150) {
-			drivetrain.tankDrive(.3, .4);
-		} else if (counter < 200){
-			drivetrain.tankDrive(.5, -.5);
-		} else if (counter < 300){
-			drivetrain.tankDrive(.3, .3);
-		} else if (counter < 400){
-			drivetrain.tankDrive(0, 0);
-			arm.set(1);
-		} else {
-			arm.set(0.0);
-			drivetrain.tankDrive(0, 0);
-		}
-		counter += 1;
+		straightAuto();
 		
-		drivetrain.update();
-		arm.update();
+		//rightSwitchAuto();
 	}
 
 	@Override
@@ -165,5 +149,44 @@ public class Robot extends BorgRobot {
 	@Override
 	public void testPeriodic() {
 		super.testPeriodic();
+	}
+	
+	public void straightAuto() {
+		if (counter < 50) {
+			drivetrain.tankDrive(.8, .8);
+		} else if (counter < 200) {
+			drivetrain.tankDrive(.3, .3);
+		} else {
+			drivetrain.tankDrive(0, 0);
+			System.out.println(drivetrain.encoderLeft.getDistance());
+		}
+		counter += 1;
+		
+		drivetrain.update();
+		arm.update();
+	}
+	
+	public void rightSwitchAuto() {
+		if (counter < 50) {
+			drivetrain.tankDrive(.8, .8);
+		} else if (counter < 150) {
+			drivetrain.tankDrive(.3, .4);
+		} else if (counter < 200){
+			drivetrain.tankDrive(.5, -.5);
+		} else if (counter < 300){
+			drivetrain.tankDrive(.3, .3);
+		} else if (counter < 400){
+			drivetrain.tankDrive(0, 0);
+			if (gameData.charAt(0) == 'R') {
+				arm.set(1);
+			}
+		} else {
+			arm.set(0.0);
+			drivetrain.tankDrive(0, 0);
+		}
+		counter += 1;
+		
+		drivetrain.update();
+		arm.update();
 	}
 }
