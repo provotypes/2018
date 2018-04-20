@@ -87,19 +87,22 @@ public class Robot extends BorgRobot {
 		drivetrain.resetEncoders();
 	}
 
+	//counter for autos
 	int counter = 0;
 	
+	//50 ticks in a second
+	int delay = 500;
+
 	@Override
 	public void autonomousPeriodic() {
-		//super.autonomousPeriodic();
-		
-		if (counter < 50) {
+		if (counter < delay) {
+			drivetrain.tankDrive(0, 0);
+		} else if (counter <  delay + 50) {
 			drivetrain.tankDrive(.8, .8);
-		} else if (counter < 200) {
+		} else if (counter < delay + 200) {
 			drivetrain.tankDrive(.3, .3);
 		} else {
 			drivetrain.tankDrive(0, 0);
-			System.out.println(drivetrain.encoderLeft.getDistance());
 		}
 		counter += 1;
 		
