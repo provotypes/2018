@@ -92,10 +92,10 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousPeriodic() {
 		
-		straightAuto();
+		//straightAuto();
 		
 		//rightSwitchAuto();
-		//leftSwitchAuto();
+		leftSwitchAuto();
 	}
 
 	@Override
@@ -172,19 +172,23 @@ public class Robot extends BorgRobot {
 			drivetrain.tankDrive(.8, .8);
 		} else if (counter < 150) {
 			drivetrain.tankDrive(.3, .4);
-		} else if (counter < 200){
-			drivetrain.tankDrive(.5, -.5);
-		} else if (counter < 300){
-			drivetrain.tankDrive(.3, .3);
-		} else if (counter < 400){
-			drivetrain.tankDrive(0, 0);
-			if (gameData.charAt(0) == 'R') {
-				arm.set(1);
-			}
 		} else {
-			arm.set(0.0);
-			drivetrain.tankDrive(0, 0);
-		}
+			if (gameData.charAt(0) == 'R') {
+				if (counter < 200) {
+					drivetrain.tankDrive(.5, -.5);
+				} else if (counter < 300){
+					drivetrain.tankDrive(.3, .3);
+				} else if (counter < 450){
+					drivetrain.tankDrive(0, 0);
+					arm.set(.6);
+				} else {
+					arm.set(-.3);
+					drivetrain.tankDrive(0, 0);
+				}
+			} else {
+				drivetrain.tankDrive(0, 0);
+			}
+		} 
 		counter += 1;
 		
 		drivetrain.update();
@@ -196,19 +200,23 @@ public class Robot extends BorgRobot {
 			drivetrain.tankDrive(.8, .8);
 		} else if (counter < 150) {
 			drivetrain.tankDrive(.3, .4);
-		} else if (counter < 200){
-			drivetrain.tankDrive(-.5, .5);
-		} else if (counter < 300){
-			drivetrain.tankDrive(.3, .3);
-		} else if (counter < 400){
-			drivetrain.tankDrive(0, 0);
-			if (gameData.charAt(0) == 'L') {
-				arm.set(1);
-			}
 		} else {
-			arm.set(0.0);
-			drivetrain.tankDrive(0, 0);
-		}
+			if (gameData.charAt(0) == 'L') {
+				if (counter < 200) {
+					drivetrain.tankDrive(-.5, .5);
+				} else if (counter < 300){
+					drivetrain.tankDrive(.3, .3);
+				} else if (counter < 450){
+					drivetrain.tankDrive(0, 0);
+					arm.set(.6);
+				} else {
+					arm.set(-.3);
+					drivetrain.tankDrive(0, 0);
+				}
+			} else {
+				drivetrain.tankDrive(0, 0);
+			}
+		} 
 		counter += 1;
 		
 		drivetrain.update();
