@@ -95,19 +95,9 @@ public class Robot extends BorgRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-		if (counter < delay) {
-			drivetrain.tankDrive(0, 0);
-		} else if (counter <  delay + 50) {
-			drivetrain.tankDrive(.8, .8);
-		} else if (counter < delay + 200) {
-			drivetrain.tankDrive(.3, .3);
-		} else {
-			drivetrain.tankDrive(0, 0);
-		}
-		counter += 1;
-		
-		drivetrain.update();
-		arm.update();
+		//straightAuto();
+		//rightSwitchAuto();
+		leftSwitchAuto();
 	}
 
 	@Override
