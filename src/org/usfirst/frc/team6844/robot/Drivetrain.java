@@ -13,8 +13,9 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Drivetrain extends BorgSubsystem {
+public class Drivetrain extends Subsystem {
 
 	Spark sparkLeft1, sparkLeft2, sparkRight1, sparkRight2;
 	ADXRS450_Gyro gyro;
@@ -45,6 +46,14 @@ public class Drivetrain extends BorgSubsystem {
 
 		encoderLeft.setDistancePerPulse(DISTANCE_PER_PULSE);
 		encoderRight.setDistancePerPulse(DISTANCE_PER_PULSE);
+	}
+	
+	public void setLeftRightSpeeds(double left, double right) {
+		sparkLeft1.set(left);
+		sparkLeft2.set(left);
+
+		sparkRight1.set(right);
+		sparkRight2.set(right);
 	}
 
 	public void tankDrive(double left, double right) {
@@ -86,12 +95,12 @@ public class Drivetrain extends BorgSubsystem {
 	}
 
 	public void resetGyro() {
-		messageBuffer.add(new Message("Reset drivetrain gyro.", Type.INFO));
+		//messageBuffer.add(new Message("Reset drivetrain gyro.", Type.INFO));
 		gyro.reset();
 	}
 
 	public void calibrateGyro() {
-		messageBuffer.add(new Message("Calibrating drivetrain gyro.", Type.INFO));
+		//messageBuffer.add(new Message("Calibrating drivetrain gyro.", Type.INFO));
 		gyro.calibrate();
 	}
 
@@ -100,7 +109,7 @@ public class Drivetrain extends BorgSubsystem {
 	}
 
 	public void reverseDriveDirection() {
-		messageBuffer.add(new Message("Reversed drivetrain controls.", Type.INFO));
+		//messageBuffer.add(new Message("Reversed drivetrain controls.", Type.INFO));
 
 		reversed = !reversed;
 
@@ -139,17 +148,23 @@ public class Drivetrain extends BorgSubsystem {
 		encoderLeft.reset();
 		encoderRight.reset();
 	}
+	
+	public void resetMeasurements() {
+		resetGyro();
+		resetEncoders();
+	}
 
 	public void nerfSpeed() {
 		if (driveScalingFactor == 1) {
-			messageBuffer.add(new Message("Nerfed drivetrain speed.", Type.INFO));
+			//.add(new Message("Nerfed drivetrain speed.", Type.INFO));
 			driveScalingFactor = .5;
 		} else if (driveScalingFactor == .5){
-			messageBuffer.add(new Message("Unnerfed drivetrain speed.", Type.INFO));
+			//messageBuffer.add(new Message("Unnerfed drivetrain speed.", Type.INFO));
 			driveScalingFactor = 1;
 		}
 	}
 
+	/*
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
@@ -172,7 +187,9 @@ public class Drivetrain extends BorgSubsystem {
 
 		return fields;
 	}
-
+	*/
+	
+	/*
 	@Override
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
@@ -193,5 +210,10 @@ public class Drivetrain extends BorgSubsystem {
 		state.put("encoderRightDistance", encoderRight.getDistance());
 
 		return state;
+	}
+	*/
+	
+	public void initDefaultCommand() {
+		
 	}
 }

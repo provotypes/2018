@@ -15,9 +15,18 @@ import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
+import easypath.EasyPathConfig;
 import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends BorgRobot {
+	
+	//50 ticks in a second
+	public static final int TICKS_PER_SEC = 50;
+	
+	int delay = 5 * TICKS_PER_SEC;
+	
+	//counter for autos
+	int counter = 0;
 
 	Drivetrain drivetrain;
 	Arm arm;
@@ -39,7 +48,7 @@ public class Robot extends BorgRobot {
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
 
-		registerSubsystem("drivetrain", drivetrain);
+		//registerSubsystem("drivetrain", drivetrain);
 
 		// Set up logging warnings, information, etc. to text file.
 		try {
@@ -70,8 +79,33 @@ public class Robot extends BorgRobot {
 			System.err.println("Unable to initalize auto scripts!");
 			e.printStackTrace();
 		}
+		
+		/*EasyPathConfig config = new EasyPathConfig(
+		        (Subsystem)drivetrain, // the subsystem itself
+		        drivetrain::setLeftRightSpeeds, // function to set left/right speeds
+		        // function to give EasyPath the length driven
+		        () -> PathUtil.defaultLengthDrivenEstimator(drivetrain::getLeftEncoderDistance, drivetrain::getRightEncoderDistance),
+		        drivetrain::getHeading, // function to give EasyPath the heading of your robot
+		        drivetrain::resetMeasurements, // function to reset your encoders to 0
+		        0.07 // kP value for P loop
+		    );*/
+		
+		//Only using left encoder, not left and right
+		EasyPathConfig config = new EasyPathConfig(
+		        drivetrain, // the subsystem itself
+		        drivetrain::setLeftRightSpeeds, // function to set left/right speeds
+		        drivetrain.encoderLeft::getDistance, // function to give EasyPath the length driven
+		        drivetrain.gyro::getAngle, // function to give EasyPath the heading of your robot
+		        drivetrain::resetMeasurements, // function to reset your encoders to 0
+		        0.07 // kP value for P loop
+		    );
+		    
 	}
 
+	/* 
+	 * AUTONOMOUS 
+	 */
+	
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
@@ -87,22 +121,22 @@ public class Robot extends BorgRobot {
 		drivetrain.resetEncoders();
 	}
 
-	//counter for autos
-	int counter = 0;
-	
-	//50 ticks in a second
-	int delay = 500;
-
 	@Override
 	public void autonomousPeriodic() {
 		//straightAuto();
 		//rightSwitchAuto();
-		leftSwitchAuto();
+		//leftSwitchAuto();
+		System.out.println(drivetrain.getLeftEncoderDistance());
 	}
+
+	/* 
+	 * TELEOP 
+	 */
 
 	@Override
 	public void teleopInit() {
 		super.teleopInit();
+		
 	}
 
 	@Override
@@ -137,6 +171,10 @@ public class Robot extends BorgRobot {
 		arm.update();
 	}
 
+	/* 
+	 * TESTING 
+	 */
+
 	@Override
 	public void testInit() {
 		super.testInit();
@@ -153,7 +191,11 @@ public class Robot extends BorgRobot {
 	public void testPeriodic() {
 		super.testPeriodic();
 	}
-	
+
+	/* 
+	 * AUTONOMOUS FUNCTIONS
+	 */
+
 	public void straightAuto() {
 		if (counter < 50) {
 			drivetrain.tankDrive(.8, .8);
@@ -161,14 +203,14 @@ public class Robot extends BorgRobot {
 			drivetrain.tankDrive(.3, .3);
 		} else {
 			drivetrain.tankDrive(0, 0);
-			System.out.println(drivetrain.encoderLeft.getDistance());
+			//System.out.println(drivetrain.encoderLeft.getDistance());
 		}
-		counter += 1;
+		counter++;
 		
 		drivetrain.update();
-		arm.update();
+		//arm.update();
 	}
-	
+
 	public void rightSwitchAuto() {
 		if (counter < 50) {
 			drivetrain.tankDrive(.8, .8);
@@ -196,7 +238,7 @@ public class Robot extends BorgRobot {
 		drivetrain.update();
 		arm.update();
 	}
-	
+
 	public void leftSwitchAuto() {
 		if (counter < 50) {
 			drivetrain.tankDrive(.8, .8);
