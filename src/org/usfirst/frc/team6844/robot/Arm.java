@@ -49,5 +49,7 @@ public class Arm extends BorgSubsystem {
 
 		return state;
 	}
+	
+	public void initDefaultCommand() {}
 
 }

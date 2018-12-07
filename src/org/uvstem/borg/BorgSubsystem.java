@@ -7,7 +7,9 @@ import org.uvstem.borg.logging.Message;
 import org.uvstem.borg.logging.MessageLoggable;
 import org.uvstem.borg.logging.StateLoggable;
 
-public abstract class BorgSubsystem implements MessageLoggable, StateLoggable {
+import edu.wpi.first.wpilibj.command.Subsystem;
+
+public abstract class BorgSubsystem extends Subsystem implements MessageLoggable, StateLoggable {
 
 	protected ArrayList<Message> messageBuffer;
 	

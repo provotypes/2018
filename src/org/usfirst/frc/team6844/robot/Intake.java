@@ -138,4 +138,6 @@ public class Intake extends BorgSubsystem {
 			extenderRight.set(Value.kForward);
 		}
 	}
+	
+	public void initDefaultCommand() {}
 }
