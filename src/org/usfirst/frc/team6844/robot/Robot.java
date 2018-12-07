@@ -15,10 +15,18 @@ import org.uvstem.borg.joysticks.LogitechGamepadController;
 import org.uvstem.borg.logging.CSVStateLogger;
 import org.uvstem.borg.logging.TextFileMessageLogger;
 
+import easypath.EasyPath;
 import easypath.EasyPathConfig;
+import easypath.FollowPath;
+import easypath.Path;
+import easypath.PathUtil;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends BorgRobot {
+	
+	private Command m_autonomousCommand;
 	
 	//50 ticks in a second
 	public static final int TICKS_PER_SEC = 50;
@@ -43,12 +51,11 @@ public class Robot extends BorgRobot {
 		CameraServer.getInstance().startAutomaticCapture();
 
 		drivetrain = new Drivetrain();
-		arm = new Arm();
 
 		gamepadDriver = new LogitechGamepadController(1);
 		gamepadOperator = new LogitechGamepadController(2);
 
-		//registerSubsystem("drivetrain", drivetrain);
+		registerSubsystem("drivetrain", drivetrain);
 
 		// Set up logging warnings, information, etc. to text file.
 		try {
@@ -80,17 +87,18 @@ public class Robot extends BorgRobot {
 			e.printStackTrace();
 		}
 		
-		/*EasyPathConfig config = new EasyPathConfig(
-		        (Subsystem)drivetrain, // the subsystem itself
+		//Using both left and right encoder
+		EasyPathConfig config = new EasyPathConfig(
+		        drivetrain, // the subsystem itself
 		        drivetrain::setLeftRightSpeeds, // function to set left/right speeds
 		        // function to give EasyPath the length driven
 		        () -> PathUtil.defaultLengthDrivenEstimator(drivetrain::getLeftEncoderDistance, drivetrain::getRightEncoderDistance),
-		        drivetrain::getHeading, // function to give EasyPath the heading of your robot
+		        drivetrain.gyro::getAngle, // function to give EasyPath the heading of your robot
 		        drivetrain::resetMeasurements, // function to reset your encoders to 0
 		        0.07 // kP value for P loop
-		    );*/
+		    );
 		
-		//Only using left encoder, not left and right
+/*		//Only using left encoder, not left and right
 		EasyPathConfig config = new EasyPathConfig(
 		        drivetrain, // the subsystem itself
 		        drivetrain::setLeftRightSpeeds, // function to set left/right speeds
@@ -99,7 +107,10 @@ public class Robot extends BorgRobot {
 		        drivetrain::resetMeasurements, // function to reset your encoders to 0
 		        0.07 // kP value for P loop
 		    );
-		    
+*/			
+		EasyPath.configure(config);
+		
+		
 	}
 
 	/* 
@@ -109,24 +120,54 @@ public class Robot extends BorgRobot {
 	@Override
 	public void autonomousInit() {
 		super.autonomousInit();
-
+		
 		try {
 			initAutoScripts(PublicKey.keyBytes, new File("/U/autos"));
 		} catch (Exception e) {
 			System.err.println("Unable to initalize auto scripts!");
 			e.printStackTrace();
 		}
-
-		drivetrain.resetGyro();
-		drivetrain.resetEncoders();
+		
+		drivetrain.resetMeasurements();
+		
+		// This drives 36 inches in a straight line, driving at 25% speed the first 50% of the path,
+		// and 75% speed in the remainder.
+		// x is the percentage completion of the path, between 0 and 1.
+//	     m_autonomousCommand = new FollowPath( //had to add FollowPath to the beginning, wasn't in the readme
+//	        PathUtil.createStraightPath(36.0), x -> {
+//	          if (x < 0.5) return 0.25;
+//	          else return 0.75;
+//	        });
+		
+		Path curvePath = new Path(t -> 
+		/* {"start":{"x":0,"y":165},"mid1":{"x":72,"y":164},"mid2":{"x":39,"y":54},"end":{"x":121,"y":53}} */
+		(654 * Math.pow(t, 2) + -654 * t + -3) / (660 * Math.pow(t, 2) + -630 * t + 216),
+		178.247);
+	    
+	    m_autonomousCommand = new FollowPath(
+	    		//PathUtil.createStraightPath(60.0), 
+	    		curvePath,
+	    		//x -> (x < 0.25) ? 0.5 : (x < 0.75 ? 0.75 : 0.25)
+	    		x -> (0.5)
+	    );
+	    
+	    m_autonomousCommand.start();
+	    
 	}
-
+	
+	
 	@Override
 	public void autonomousPeriodic() {
+		
+		Scheduler.getInstance().run();
+		
+		//System.out.println("Is running: " + m_autonomousCommand.isRunning());
 		//straightAuto();
 		//rightSwitchAuto();
 		//leftSwitchAuto();
-		System.out.println(drivetrain.getLeftEncoderDistance());
+		//System.out.println("LEFT: " + drivetrain.getLeftEncoderDistance());
+		//System.out.println("RIGHT: " + drivetrain.getRightEncoderDistance());
+		System.out.println("GYRO: " + drivetrain.gyro.getAngle());
 	}
 
 	/* 
@@ -190,6 +231,9 @@ public class Robot extends BorgRobot {
 	@Override
 	public void testPeriodic() {
 		super.testPeriodic();
+		
+		System.out.println("RIGHT: " + drivetrain.encoderRight.getDistance());
+		System.out.println("LEFT: " + drivetrain.encoderLeft.getDistance());
 	}
 
 	/* 
