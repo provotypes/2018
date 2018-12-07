@@ -13,9 +13,8 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Drivetrain extends Subsystem {
+public class Drivetrain extends BorgSubsystem {
 
 	Spark sparkLeft1, sparkLeft2, sparkRight1, sparkRight2;
 	ADXRS450_Gyro gyro;
@@ -30,7 +29,6 @@ public class Drivetrain extends Subsystem {
 
 	public Drivetrain() {
 		super();
-
 		sparkLeft1 = new Spark(0);
 		sparkLeft2 = new Spark(1);
 		sparkRight1 = new Spark(2);
@@ -40,9 +38,8 @@ public class Drivetrain extends Subsystem {
 		sparkLeft2.setInverted(true);
 
 		gyro = new ADXRS450_Gyro(Port.kOnboardCS0);
-
-		encoderLeft = new Encoder(2, 3);
-		encoderRight = new Encoder(4, 5);
+		encoderLeft = new Encoder(0, 1);
+		encoderRight = new Encoder(2, 3, true);
 
 		encoderLeft.setDistancePerPulse(DISTANCE_PER_PULSE);
 		encoderRight.setDistancePerPulse(DISTANCE_PER_PULSE);
@@ -164,7 +161,7 @@ public class Drivetrain extends Subsystem {
 		}
 	}
 
-	/*
+	
 	@Override
 	public Set<String> getStateLogFields() {
 		Set<String> fields = new HashSet<>();
@@ -187,9 +184,9 @@ public class Drivetrain extends Subsystem {
 
 		return fields;
 	}
-	*/
 	
-	/*
+	
+	
 	@Override
 	public Map<String, Object> logState() {
 		Map<String, Object> state = new HashMap<>();
@@ -211,9 +208,6 @@ public class Drivetrain extends Subsystem {
 
 		return state;
 	}
-	*/
 	
-	public void initDefaultCommand() {
-		
-	}
+	public void initDefaultCommand() {}
 }
