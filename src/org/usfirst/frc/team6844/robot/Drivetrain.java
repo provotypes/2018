@@ -134,11 +134,11 @@ public class Drivetrain extends BorgSubsystem {
 	}
 
 	public double getLeftEncoderDistance() {
-		return encoderLeft.getDistance();
+		return -1 * encoderLeft.getDistance();
 	}
 
 	public double getRightEncoderDistance() {
-		return encoderRight.getDistance();
+		return -1 * encoderRight.getDistance();
 	}
 
 	public void resetEncoders() {

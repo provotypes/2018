@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 public class Robot extends BorgRobot {
 	
 	private Command m_autonomousCommand;
+	private Command m_autonomousCommand2;
 	
 	//50 ticks in a second
 	public static final int TICKS_PER_SEC = 50;
@@ -108,6 +109,9 @@ public class Robot extends BorgRobot {
 		        0.07 // kP value for P loop
 		    );
 */			
+		
+		//config.setSwapDrivingDirection(true);
+		
 		EasyPath.configure(config);
 		
 		
@@ -134,15 +138,16 @@ public class Robot extends BorgRobot {
 		// and 75% speed in the remainder.
 		// x is the percentage completion of the path, between 0 and 1.
 //	     m_autonomousCommand = new FollowPath( //had to add FollowPath to the beginning, wasn't in the readme
-//	        PathUtil.createStraightPath(36.0), x -> {
+//	        PathUtil.createStraightPath(36.0), 
+//			x -> {
 //	          if (x < 0.5) return 0.25;
 //	          else return 0.75;
 //	        });
 		
 		Path curvePath = new Path(t -> 
-		/* {"start":{"x":0,"y":165},"mid1":{"x":72,"y":164},"mid2":{"x":39,"y":54},"end":{"x":121,"y":53}} */
-		(654 * Math.pow(t, 2) + -654 * t + -3) / (660 * Math.pow(t, 2) + -630 * t + 216),
-		178.247);
+		/* {"start":{"x":21,"y":357},"mid1":{"x":249,"y":352},"mid2":{"x":8,"y":115},"end":{"x":18,"y":332}} */
+		(2058 * Math.pow(t, 2) + -1392 * t + -15) / (2160 * Math.pow(t, 2) + -2814 * t + 684),
+		329.656);
 	    
 	    m_autonomousCommand = new FollowPath(
 	    		//PathUtil.createStraightPath(60.0), 
@@ -151,7 +156,23 @@ public class Robot extends BorgRobot {
 	    		x -> (0.5)
 	    );
 	    
+//	    Path curvePath2 = new Path(t -> 
+//		/* {"start":{"x":98,"y":98},"mid1":{"x":96,"y":28},"mid2":{"x":46,"y":33},"end":{"x":0,"y":31}} */
+//		(-246 * Math.pow(t, 2) + 450 * t + -210) / (156 * Math.pow(t, 2) + -288 * t + -6),
+//		138.073);
+	    
+	    /*m_autonomousCommand2 = new FollowPath(
+	    		//PathUtil.createStraightPath(60.0), 
+	    		curvePath2,
+	    		//x -> (x < 0.25) ? 0.5 : (x < 0.75 ? 0.75 : 0.25)
+	    		x -> (0.5)
+	    );*/
+	    
+	    
+	    
 	    m_autonomousCommand.start();
+	    //m_autonomousCommand2.start();
+	    
 	    
 	}
 	
